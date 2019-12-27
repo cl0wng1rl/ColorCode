@@ -19,6 +19,13 @@
         "command": "extension.generateTheme",
         "title": "Generate Theme"
       }
+    ],
+    "themes": [
+      {
+        "label": "ColorCode",
+        "uiTheme": "vs-dark",
+        "path": "./ColorCodeTheme.json"
+      }
     ]
   },
   "scripts": {
