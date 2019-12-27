@@ -4,6 +4,9 @@ import * as vscode from "vscode";
 import Theme from "./lib/Theme";
 import ColorMind from "./lib/ColorMind";
 import ThemeSettings from "./lib/ThemeSettings";
+import { writeFileSync } from "fs";
+
+const defaultThemeName = "ColorCode";
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -30,8 +33,17 @@ export function activate(context: vscode.ExtensionContext) {
 async function changeConfiguration(settings: ThemeSettings) {
   const workbench = vscode.workspace.getConfiguration("workbench");
   const editor = vscode.workspace.getConfiguration("editor");
-  await workbench.update("colorCustomizations", settings.colorCustomizations);
-  await editor.update("tokenColorCustomizations", settings.tokenColorCustomizations);
+  await workbench.update(`colorCustomizations.[${defaultThemeName}]`, settings.colorCustomizations);
+  await editor.update(
+    `tokenColorCustomizations.[${defaultThemeName}]`,
+    settings.tokenColorCustomizations
+  );
+}
+
+function saveColors(context: vscode.ExtensionContext, colorStrings: string[], name: string) {
+  let savedColors = JSON.parse(context.workspaceState.get("savedColors") || "{}");
+  savedColors[name] = colorStrings;
+  context.workspaceState.update("savedColors", savedColors);
 }
 
 // this method is called when your extension is deactivated
