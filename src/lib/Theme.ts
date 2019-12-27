@@ -1,15 +1,13 @@
 import * as Color from "color";
+import ThemeSettings from "./ThemeSettings";
 
 export default class Theme {
-  static generateSettingsFromColorStrings(colourStrings: string[]): Object {
+  static generateSettingsFromColorStrings(colourStrings: string[]): ThemeSettings {
     let colours = Theme.getColoursFromColourStrings(colourStrings);
     colours = Theme.orderColoursByLightness(colours);
     const jsonEditorTheme = Theme.createJSONEditorTheme(colours);
     const jsonWorkbenchTheme = Theme.createJSONWorkbenchTheme(colours);
-    return {
-      colorCustomizations: jsonWorkbenchTheme,
-      tokenColorCustomizations: jsonEditorTheme
-    };
+    return new ThemeSettings(jsonWorkbenchTheme, jsonEditorTheme);
   }
 
   private static getColoursFromColourStrings(colourStrings: string[]): Color[] {
