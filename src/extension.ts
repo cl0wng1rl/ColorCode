@@ -3,7 +3,6 @@
 import * as vscode from "vscode";
 import Theme from "./lib/Theme";
 import ColorMind from "./lib/ColorMind";
-import { readFileSync, writeFileSync, existsSync, fstat } from "fs";
 import ThemeSettings from "./lib/ThemeSettings";
 
 // this method is called when your extension is activated
@@ -17,23 +16,21 @@ export function activate(context: vscode.ExtensionContext) {
   // The commandId parameter must match the command field in package.json
   let disposable = vscode.commands.registerCommand("extension.generateTheme", () => {
     // The code you place here will be executed every time your command is executed
-
     ColorMind.getRandomColourPalette().then(colorStrings => {
       const settings = Theme.generateSettingsFromColorStrings(colorStrings);
-      updateStuff(settings);
+      changeConfiguration(settings);
     });
     // Display a message box to the user
-
     vscode.window.showInformationMessage("New Theme Generated!");
   });
 
   context.subscriptions.push(disposable);
 }
 
-async function updateStuff(settings: ThemeSettings) {
+async function changeConfiguration(settings: ThemeSettings) {
   const workbench = vscode.workspace.getConfiguration("workbench");
-  await workbench.update("colorCustomizations", settings.colorCustomizations);
   const editor = vscode.workspace.getConfiguration("editor");
+  await workbench.update("colorCustomizations", settings.colorCustomizations);
   await editor.update("tokenColorCustomizations", settings.tokenColorCustomizations);
 }
 
