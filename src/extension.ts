@@ -38,11 +38,12 @@ export function activate(context: vscode.ExtensionContext) {
         }
 
         if (!nameIsUnique(context, value)) {
-          vscode.window.showInformationMessage(`The name '${value}' is already taken`);
+          vscode.window.showErrorMessage(`The name '${value}' is already taken`);
           return;
         }
 
         saveCurrentColors(context, value);
+        vscode.window.showInformationMessage(`Theme '${value}' successfully saved`);
       });
       // Display a message box to the user
     })
@@ -57,9 +58,22 @@ export function activate(context: vscode.ExtensionContext) {
         const colorStrings = loadColors(context, value);
         const settings = Theme.generateSettingsFromColorStrings(colorStrings);
         changeConfiguration(settings);
+        vscode.window.showInformationMessage(`Theme '${value}' successfully loaded`);
       });
       // Display a message box to the user
-      vscode.window.showInformationMessage("New Theme Generated!");
+    })
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand("extension.deleteTheme", () => {
+      vscode.window.showQuickPick(getSavedThemeNames(context)).then(value => {
+        if (!value) {
+          return;
+        }
+        deleteTheme(context, value);
+        vscode.window.showInformationMessage(`Theme '${value}' successfully deleted`);
+      });
+      // Display a message box to the user
     })
   );
 }
@@ -91,6 +105,12 @@ function saveCurrentColors(context: vscode.ExtensionContext, name: string): void
 
 function loadColors(context: vscode.ExtensionContext, name: string): string[] {
   return JSON.parse(JSON.stringify(context.workspaceState.get("savedColors") || "{}"))[name];
+}
+
+function deleteTheme(context: vscode.ExtensionContext, name: string) {
+  const savedColors = JSON.parse(JSON.stringify(context.workspaceState.get("savedColors") || "{}"));
+  delete savedColors[name];
+  context.workspaceState.update("savedColors", savedColors);
 }
 
 function getSavedThemeNames(context: vscode.ExtensionContext): string[] {
