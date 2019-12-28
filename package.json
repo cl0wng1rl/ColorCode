@@ -10,14 +10,24 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:extension.generateTheme"
+    "onCommand:extension.generateTheme",
+    "onCommand:extension.saveCurrentTheme",
+    "onCommand:extension.loadTheme"
   ],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
       {
         "command": "extension.generateTheme",
-        "title": "Generate Theme"
+        "title": "ColorCode: Generate Theme"
+      },
+      {
+        "command": "extension.saveCurrentTheme",
+        "title": "ColorCode: Save Current Theme"
+      },
+      {
+        "command": "extension.loadTheme",
+        "title": "ColorCode: Load Theme"
       }
     ],
     "themes": [
