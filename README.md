@@ -54,3 +54,11 @@ If you decide you don't want to keep a theme you can delete it by doing the foll
 ### 1.0.0
 
 Initial release of ColorCode
+
+## Misc
+
+This is my first VS Code extension, so if you find that there are issues with ColorCode then please feel free to [file an issue](https://github.com/gabrielbarker/colorcode/issues)! I'm certain there will be things I missed.
+
+Any relevant changes for each version are documented in the changelog. Please update and check the changelog before filing any issues, as they may have already been taken care of.
+
+This extension will undoubtably produce less thorough and well balanced themes as the many exceptional themes on VS Code. It is intended as a solution to the problem of growing tired of a theme and wanting to freshen up your workspace, without finding and installing a new theme. I hope it brings some color to your development!
