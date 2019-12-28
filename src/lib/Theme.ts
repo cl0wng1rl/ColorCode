@@ -5,8 +5,12 @@ export default class Theme {
   static generateSettingsFromColorStrings(colourStrings: string[]): ThemeSettings {
     let colours = Theme.getColoursFromColourStrings(colourStrings);
     colours = Theme.orderColoursByLightness(colours);
-    const jsonEditorTheme = Theme.createJSONEditorTheme(colours);
-    const jsonWorkbenchTheme = Theme.createJSONWorkbenchTheme(colours);
+    const jsonEditorTheme = {
+      "[ColorCode]": Theme.createJSONEditorTheme(colours)
+    };
+    const jsonWorkbenchTheme = {
+      "[ColorCode]": Theme.createJSONWorkbenchTheme(colours)
+    };
     return new ThemeSettings(jsonWorkbenchTheme, jsonEditorTheme);
   }
 
