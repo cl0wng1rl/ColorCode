@@ -12,7 +12,8 @@
   "activationEvents": [
     "onCommand:extension.generateTheme",
     "onCommand:extension.saveCurrentTheme",
-    "onCommand:extension.loadTheme"
+    "onCommand:extension.loadTheme",
+    "onCommand:extension.deleteTheme"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -28,6 +29,10 @@
       {
         "command": "extension.loadTheme",
         "title": "ColorCode: Load Theme"
+      },
+      {
+        "command": "extension.deleteTheme",
+        "title": "ColorCode: Delete Theme"
       }
     ],
     "themes": [
