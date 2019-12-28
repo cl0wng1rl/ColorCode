@@ -67,11 +67,8 @@ export function activate(context: vscode.ExtensionContext) {
 async function changeConfiguration(settings: ThemeSettings) {
   const workbench = vscode.workspace.getConfiguration("workbench");
   const editor = vscode.workspace.getConfiguration("editor");
-  await workbench.update(`colorCustomizations.[${defaultThemeName}]`, settings.colorCustomizations);
-  await editor.update(
-    `tokenColorCustomizations.[${defaultThemeName}]`,
-    settings.tokenColorCustomizations
-  );
+  await workbench.update(`colorCustomizations`, settings.colorCustomizations);
+  await editor.update(`tokenColorCustomizations`, settings.tokenColorCustomizations);
 }
 
 function saveColors(context: vscode.ExtensionContext, colorStrings: string[], name: string): void {
