@@ -71,7 +71,13 @@ export function activate(context: vscode.ExtensionContext) {
       if (!colorStrings) {
         return;
       }
-      vscode.window.showInformationMessage(`Theme Code: ${generateThemeCode(colorStrings)}`);
+      const COPY_LABEL = "Copy To Clipboard";
+      const code = generateThemeCode(colorStrings);
+      vscode.window.showInformationMessage(`Theme Code: ${code}`, COPY_LABEL).then(selection => {
+        if (selection === COPY_LABEL) {
+          vscode.env.clipboard.writeText(code);
+        }
+      });
     })
   );
 
