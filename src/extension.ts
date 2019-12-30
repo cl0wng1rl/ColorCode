@@ -64,6 +64,35 @@ export function activate(context: vscode.ExtensionContext) {
       });
     })
   );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand("extension.generateThemeCode", () => {
+      const colorStrings = context.globalState.get<Number[][]>(CURRENT_COLORS_KEY);
+      if (!colorStrings) {
+        return;
+      }
+      const COPY_LABEL = "Copy To Clipboard";
+      const code = generateThemeCode(colorStrings);
+      vscode.window.showInformationMessage(`Theme Code: ${code}`, COPY_LABEL).then(selection => {
+        if (selection === COPY_LABEL) {
+          vscode.env.clipboard.writeText(code);
+        }
+      });
+    })
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand("extension.readThemeCode", () => {
+      vscode.window.showInputBox({ placeHolder: "Enter your code..." }).then(value => {
+        if (!value) {
+          return;
+        }
+        const colorStrings = readThemeCode(value);
+        const settings = Theme.generateSettingsFromColorStrings(colorStrings);
+        changeConfiguration(settings);
+      });
+    })
+  );
 }
 
 async function changeConfiguration(settings: ThemeSettings) {
@@ -81,13 +110,17 @@ async function changeConfiguration(settings: ThemeSettings) {
   );
 }
 
-function saveColors(context: vscode.ExtensionContext, colorStrings: string[], name: string): void {
+function saveColors(
+  context: vscode.ExtensionContext,
+  colorStrings: Number[][],
+  name: string
+): void {
   let savedColors = JSON.parse(JSON.stringify(context.globalState.get(SAVED_COLORS_KEY) || {}));
   savedColors[name] = colorStrings;
   context.globalState.update(SAVED_COLORS_KEY, savedColors);
 }
 
-function cacheCurrentColors(context: vscode.ExtensionContext, colorStrings: string[]): void {
+function cacheCurrentColors(context: vscode.ExtensionContext, colorStrings: Number[][]): void {
   context.globalState.update(CURRENT_COLORS_KEY, colorStrings);
 }
 
@@ -98,7 +131,7 @@ function saveCurrentColors(context: vscode.ExtensionContext, name: string): void
   saveColors(context, colorStrings, name);
 }
 
-function loadColors(context: vscode.ExtensionContext, name: string): string[] {
+function loadColors(context: vscode.ExtensionContext, name: string): Number[][] {
   const colors = JSON.parse(JSON.stringify(context.globalState.get(SAVED_COLORS_KEY) || {}))[name];
   vscode.window.showInformationMessage(`Theme '${name}' successfully loaded`);
   return colors;
@@ -109,6 +142,14 @@ function deleteTheme(context: vscode.ExtensionContext, name: string) {
   delete savedColors[name];
   context.globalState.update(SAVED_COLORS_KEY, savedColors);
   vscode.window.showInformationMessage(`Theme '${name}' successfully deleted`);
+}
+
+function generateThemeCode(colorStrings: Number[][]): string {
+  return colorStrings.map(color => color.join("-")).join("/");
+}
+
+function readThemeCode(code: string): Number[][] {
+  return code.split("/").map(color => color.split("-").map(val => Number.parseInt(val)));
 }
 
 function getSavedThemeNames(context: vscode.ExtensionContext): string[] {
