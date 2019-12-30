@@ -49,6 +49,19 @@ If you decide you don't want to keep a theme you can delete it by doing the foll
 2.  From the Command Palette select **Color Code: Delete Theme**
 3.  Enter the name of the theme you wish to delete and hit **Enter**
 
+If you find a theme you want to share with people you can do the following:
+
+1.  From the menu bar click: View > Command Palette
+2.  From the Command Palette select **Color Code: Generate Code From Current Theme**
+3.  Click **Copy To Clipboard** on the message box
+4.  Send this code to anyone with whom you wish to share your theme
+
+When you have a theme code you can load it by doing the following:
+
+1.  From the menu bar click: View > Command Palette
+2.  From the Command Palette select **Color Code: Read Theme Code**
+3.  Enter the code of the theme you wish to load and hit **Enter**
+
 ## Release Notes
 
 ### 1.0.0
