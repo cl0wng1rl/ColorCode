@@ -2,7 +2,7 @@ import { XMLHttpRequest } from "xmlhttprequest-ts";
 
 export default class ColorMind {
   static async getRandomColourPalette() {
-    return new Promise<string[]>((resolve, reject) => {
+    return new Promise<Number[][]>((resolve, reject) => {
       var url = "http://colormind.io/api/";
       var data = {
         model: "default"
