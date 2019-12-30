@@ -7,7 +7,6 @@ const SAVED_COLORS_KEY = "savedColors";
 const CURRENT_COLORS_KEY = "currentColors";
 
 export function activate(context: vscode.ExtensionContext) {
-  console.log('Congratulations, your extension "ColorCode" is now active!');
   context.subscriptions.push(
     vscode.commands.registerCommand("extension.generateTheme", () => {
       ColorMind.getRandomColourPalette().then(colorStrings => {
@@ -15,7 +14,6 @@ export function activate(context: vscode.ExtensionContext) {
         changeConfiguration(settings);
         cacheCurrentColors(context, colorStrings);
       });
-      vscode.window.showInformationMessage("New Theme Generated!");
     })
   );
 
@@ -46,7 +44,6 @@ export function activate(context: vscode.ExtensionContext) {
         const colorStrings = loadColors(context, value);
         const settings = Theme.generateSettingsFromColorStrings(colorStrings);
         changeConfiguration(settings);
-        vscode.window.showInformationMessage(`Theme '${value}' successfully loaded`);
       });
     })
   );
@@ -58,7 +55,6 @@ export function activate(context: vscode.ExtensionContext) {
           return;
         }
         deleteTheme(context, value);
-        vscode.window.showInformationMessage(`Theme '${value}' successfully deleted`);
       });
     })
   );
@@ -67,46 +63,50 @@ export function activate(context: vscode.ExtensionContext) {
 async function changeConfiguration(settings: ThemeSettings) {
   const workbench = vscode.workspace.getConfiguration("workbench");
   const editor = vscode.workspace.getConfiguration("editor");
-  await workbench.update(`colorCustomizations`, settings.colorCustomizations);
-  await editor.update(`tokenColorCustomizations`, settings.tokenColorCustomizations);
+  await workbench.update(
+    `colorCustomizations`,
+    settings.colorCustomizations,
+    vscode.ConfigurationTarget.Global
+  );
+  await editor.update(
+    `tokenColorCustomizations`,
+    settings.tokenColorCustomizations,
+    vscode.ConfigurationTarget.Global
+  );
 }
 
 function saveColors(context: vscode.ExtensionContext, colorStrings: string[], name: string): void {
-  let savedColors = JSON.parse(
-    JSON.stringify(context.workspaceState.get(SAVED_COLORS_KEY) || "{}")
-  );
+  let savedColors = JSON.parse(JSON.stringify(context.globalState.get(SAVED_COLORS_KEY) || {}));
   savedColors[name] = colorStrings;
-  context.workspaceState.update(SAVED_COLORS_KEY, savedColors);
-  vscode.window.showInformationMessage(`Theme '${name}' saved successfully`);
+  context.globalState.update(SAVED_COLORS_KEY, savedColors);
 }
 
 function cacheCurrentColors(context: vscode.ExtensionContext, colorStrings: string[]): void {
-  context.workspaceState.update(CURRENT_COLORS_KEY, colorStrings);
+  context.globalState.update(CURRENT_COLORS_KEY, colorStrings);
 }
 
 function saveCurrentColors(context: vscode.ExtensionContext, name: string): void {
   const colorStrings = JSON.parse(
-    JSON.stringify(context.workspaceState.get(CURRENT_COLORS_KEY) || "{}")
+    JSON.stringify(context.globalState.get(CURRENT_COLORS_KEY) || {})
   );
   saveColors(context, colorStrings, name);
 }
 
 function loadColors(context: vscode.ExtensionContext, name: string): string[] {
-  return JSON.parse(JSON.stringify(context.workspaceState.get(SAVED_COLORS_KEY) || "{}"))[name];
+  const colors = JSON.parse(JSON.stringify(context.globalState.get(SAVED_COLORS_KEY) || {}))[name];
+  vscode.window.showInformationMessage(`Theme '${name}' successfully loaded`);
+  return colors;
 }
 
 function deleteTheme(context: vscode.ExtensionContext, name: string) {
-  const savedColors = JSON.parse(
-    JSON.stringify(context.workspaceState.get(SAVED_COLORS_KEY) || "{}")
-  );
+  const savedColors = JSON.parse(JSON.stringify(context.globalState.get(SAVED_COLORS_KEY) || {}));
   delete savedColors[name];
-  context.workspaceState.update(SAVED_COLORS_KEY, savedColors);
+  context.globalState.update(SAVED_COLORS_KEY, savedColors);
+  vscode.window.showInformationMessage(`Theme '${name}' successfully deleted`);
 }
 
 function getSavedThemeNames(context: vscode.ExtensionContext): string[] {
-  const savedColors = JSON.parse(
-    JSON.stringify(context.workspaceState.get(SAVED_COLORS_KEY) || "{}")
-  );
+  const savedColors = JSON.parse(JSON.stringify(context.globalState.get(SAVED_COLORS_KEY) || {}));
   return Object.keys(savedColors);
 }
 
