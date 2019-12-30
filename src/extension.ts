@@ -1,37 +1,24 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
 import * as vscode from "vscode";
 import Theme from "./lib/Theme";
 import ColorMind from "./lib/ColorMind";
 import ThemeSettings from "./lib/ThemeSettings";
 
-const defaultThemeName = "ColorCode";
+const SAVED_COLORS_KEY = "savedColors";
+const CURRENT_COLORS_KEY = "currentColors";
 
-// this method is called when your extension is activated
-// your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
-  // Use the console to output diagnostic information (console.log) and errors (console.error)
-  // This line of code will only be executed once when your extension is activated
-  console.log('Congratulations, your extension "ColorCode" is now active!');
-  // The command has been defined in the package.json file
-  // Now provide the implementation of the command with registerCommand
-  // The commandId parameter must match the command field in package.json
   context.subscriptions.push(
     vscode.commands.registerCommand("extension.generateTheme", () => {
-      // The code you place here will be executed every time your command is executed
       ColorMind.getRandomColourPalette().then(colorStrings => {
         const settings = Theme.generateSettingsFromColorStrings(colorStrings);
         changeConfiguration(settings);
         cacheCurrentColors(context, colorStrings);
       });
-      // Display a message box to the user
-      vscode.window.showInformationMessage("New Theme Generated!");
     })
   );
 
   context.subscriptions.push(
     vscode.commands.registerCommand("extension.saveCurrentTheme", async () => {
-      // The code you place here will be executed every time your command is executed
       vscode.window.showInputBox({ placeHolder: "Enter a name for your theme..." }).then(value => {
         if (!value) {
           return;
@@ -45,7 +32,6 @@ export function activate(context: vscode.ExtensionContext) {
         saveCurrentColors(context, value);
         vscode.window.showInformationMessage(`Theme '${value}' successfully saved`);
       });
-      // Display a message box to the user
     })
   );
 
@@ -58,9 +44,7 @@ export function activate(context: vscode.ExtensionContext) {
         const colorStrings = loadColors(context, value);
         const settings = Theme.generateSettingsFromColorStrings(colorStrings);
         changeConfiguration(settings);
-        vscode.window.showInformationMessage(`Theme '${value}' successfully loaded`);
       });
-      // Display a message box to the user
     })
   );
 
@@ -71,9 +55,7 @@ export function activate(context: vscode.ExtensionContext) {
           return;
         }
         deleteTheme(context, value);
-        vscode.window.showInformationMessage(`Theme '${value}' successfully deleted`);
       });
-      // Display a message box to the user
     })
   );
 }
@@ -81,40 +63,50 @@ export function activate(context: vscode.ExtensionContext) {
 async function changeConfiguration(settings: ThemeSettings) {
   const workbench = vscode.workspace.getConfiguration("workbench");
   const editor = vscode.workspace.getConfiguration("editor");
-  await workbench.update(`colorCustomizations`, settings.colorCustomizations);
-  await editor.update(`tokenColorCustomizations`, settings.tokenColorCustomizations);
+  await workbench.update(
+    `colorCustomizations`,
+    settings.colorCustomizations,
+    vscode.ConfigurationTarget.Global
+  );
+  await editor.update(
+    `tokenColorCustomizations`,
+    settings.tokenColorCustomizations,
+    vscode.ConfigurationTarget.Global
+  );
 }
 
 function saveColors(context: vscode.ExtensionContext, colorStrings: string[], name: string): void {
-  let savedColors = JSON.parse(JSON.stringify(context.workspaceState.get("savedColors") || "{}"));
+  let savedColors = JSON.parse(JSON.stringify(context.globalState.get(SAVED_COLORS_KEY) || {}));
   savedColors[name] = colorStrings;
-  context.workspaceState.update("savedColors", savedColors);
-  vscode.window.showInformationMessage(`Theme '${name}' saved successfully`);
+  context.globalState.update(SAVED_COLORS_KEY, savedColors);
 }
 
 function cacheCurrentColors(context: vscode.ExtensionContext, colorStrings: string[]): void {
-  context.workspaceState.update("currentColors", colorStrings);
+  context.globalState.update(CURRENT_COLORS_KEY, colorStrings);
 }
 
 function saveCurrentColors(context: vscode.ExtensionContext, name: string): void {
   const colorStrings = JSON.parse(
-    JSON.stringify(context.workspaceState.get("currentColors") || "{}")
+    JSON.stringify(context.globalState.get(CURRENT_COLORS_KEY) || {})
   );
   saveColors(context, colorStrings, name);
 }
 
 function loadColors(context: vscode.ExtensionContext, name: string): string[] {
-  return JSON.parse(JSON.stringify(context.workspaceState.get("savedColors") || "{}"))[name];
+  const colors = JSON.parse(JSON.stringify(context.globalState.get(SAVED_COLORS_KEY) || {}))[name];
+  vscode.window.showInformationMessage(`Theme '${name}' successfully loaded`);
+  return colors;
 }
 
 function deleteTheme(context: vscode.ExtensionContext, name: string) {
-  const savedColors = JSON.parse(JSON.stringify(context.workspaceState.get("savedColors") || "{}"));
+  const savedColors = JSON.parse(JSON.stringify(context.globalState.get(SAVED_COLORS_KEY) || {}));
   delete savedColors[name];
-  context.workspaceState.update("savedColors", savedColors);
+  context.globalState.update(SAVED_COLORS_KEY, savedColors);
+  vscode.window.showInformationMessage(`Theme '${name}' successfully deleted`);
 }
 
 function getSavedThemeNames(context: vscode.ExtensionContext): string[] {
-  const savedColors = JSON.parse(JSON.stringify(context.workspaceState.get("savedColors") || "{}"));
+  const savedColors = JSON.parse(JSON.stringify(context.globalState.get(SAVED_COLORS_KEY) || {}));
   return Object.keys(savedColors);
 }
 
@@ -122,5 +114,4 @@ function nameIsUnique(context: vscode.ExtensionContext, name: string): boolean {
   return !getSavedThemeNames(context).includes(name);
 }
 
-// this method is called when your extension is deactivated
 export function deactivate() {}

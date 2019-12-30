@@ -1,13 +1,33 @@
 {
   "name": "colorcode",
   "displayName": "ColorCode",
-  "description": "",
+  "description": "A VS Code extension that can generate color themes for your workspace",
   "version": "0.0.1",
+  "icon": "images/icon.png",
+  "publisher": "colorcodepublisher",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gabrielbarker/ColorCode"
+  },
+  "homepage": "https://github.com/gabrielbarker/ColorCode/blob/master/README.md",
   "engines": {
     "vscode": "^1.41.0"
   },
+  "galleryBanner": {
+    "color": "#58029e",
+    "theme": "dark"
+  },
   "categories": [
-    "Other"
+    "Other",
+    "Themes"
+  ],
+  "keywords": [
+    "Theme",
+    "Dark Theme",
+    "Color",
+    "Colour",
+    "Random",
+    "Generator"
   ],
   "activationEvents": [
     "onCommand:extension.generateTheme",
