@@ -37,6 +37,11 @@ export function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(
     vscode.commands.registerCommand("extension.loadTheme", () => {
+      const themeNames = getSavedThemeNames(context);
+      if (!themeNames.length) {
+        vscode.window.showInformationMessage(`You don't have any saved themes yet`);
+        return;
+      }
       vscode.window.showQuickPick(getSavedThemeNames(context)).then(value => {
         if (!value) {
           return;
@@ -44,6 +49,7 @@ export function activate(context: vscode.ExtensionContext) {
         const colorStrings = loadColors(context, value);
         const settings = Theme.generateSettingsFromColorStrings(colorStrings);
         changeConfiguration(settings);
+        cacheCurrentColors(context, colorStrings);
       });
     })
   );
