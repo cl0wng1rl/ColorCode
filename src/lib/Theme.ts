@@ -2,7 +2,7 @@ import * as Color from "color";
 import ThemeSettings from "./ThemeSettings";
 
 export default class Theme {
-  static generateSettingsFromColorStrings(colourStrings: string[]): ThemeSettings {
+  static generateSettingsFromColorStrings(colourStrings: Number[][]): ThemeSettings {
     let colours = Theme.getColoursFromColourStrings(colourStrings);
     colours = Theme.orderColoursByLightness(colours);
     const jsonEditorTheme = {
@@ -14,7 +14,7 @@ export default class Theme {
     return new ThemeSettings(jsonWorkbenchTheme, jsonEditorTheme);
   }
 
-  private static getColoursFromColourStrings(colourStrings: string[]): Color[] {
+  private static getColoursFromColourStrings(colourStrings: Number[][]): Color[] {
     let colours: Color[] = [];
     colourStrings.forEach(c => {
       colours.push(Color.rgb(c));

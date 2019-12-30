@@ -33,7 +33,9 @@
     "onCommand:extension.generateTheme",
     "onCommand:extension.saveCurrentTheme",
     "onCommand:extension.loadTheme",
-    "onCommand:extension.deleteTheme"
+    "onCommand:extension.deleteTheme",
+    "onCommand:extension.generateThemeCode",
+    "onCommand:extension.readThemeCode"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -53,6 +55,14 @@
       {
         "command": "extension.deleteTheme",
         "title": "ColorCode: Delete Theme"
+      },
+      {
+        "command": "extension.generateThemeCode",
+        "title": "ColorCode: Generate Code From Current Theme"
+      },
+      {
+        "command": "extension.readThemeCode",
+        "title": "ColorCode: Read Theme Code"
       }
     ],
     "themes": [
