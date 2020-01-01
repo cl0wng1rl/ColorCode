@@ -56,7 +56,12 @@ export function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(
     vscode.commands.registerCommand("extension.deleteTheme", () => {
-      vscode.window.showQuickPick(getSavedThemeNames(context)).then(value => {
+      const themeNames = getSavedThemeNames(context);
+      if (!themeNames.length) {
+        vscode.window.showInformationMessage(`You don't have any saved themes yet`);
+        return;
+      }
+      vscode.window.showQuickPick(themeNames).then(value => {
         if (!value) {
           return;
         }
