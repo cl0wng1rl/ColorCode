@@ -92,9 +92,16 @@ export function activate(context: vscode.ExtensionContext) {
         if (!value) {
           return;
         }
+
+        if (!stringIsAThemeCode(value)) {
+          vscode.window.showInformationMessage(`That is not a valid theme code`);
+          return;
+        }
+
         const colorStrings = readThemeCode(value);
         const settings = Theme.generateSettingsFromColorStrings(colorStrings);
         changeConfiguration(settings);
+        cacheCurrentColors(context, colorStrings);
       });
     })
   );
@@ -164,6 +171,30 @@ function getSavedThemeNames(context: vscode.ExtensionContext): string[] {
 
 function nameIsUnique(context: vscode.ExtensionContext, name: string): boolean {
   return !getSavedThemeNames(context).includes(name);
+}
+
+function stringIsAThemeCode(code: string): boolean {
+  const splitCode = code.split("/");
+  if (splitCode.length !== 5) {
+    return false;
+  }
+  let validColors = true;
+  splitCode.forEach(color => {
+    const values = color.split("-");
+    if (values.length !== 3) {
+      console.log(color);
+      validColors = false;
+    }
+    values.forEach(v => {
+      const n = Number.parseInt(v);
+      if (Number.isNaN(n) || n > 256) {
+        console.log(v);
+        validColors = false;
+      }
+    });
+  });
+  console.log(validColors);
+  return validColors;
 }
 
 export function deactivate() {}
