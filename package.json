@@ -4,7 +4,7 @@
   "description": "A VS Code extension that can generate color themes for your workspace",
   "version": "1.0.0",
   "icon": "images/icon.png",
-  "publisher": "colorcodepublisher",
+  "publisher": "gabrielbarker",
   "repository": {
     "type": "git",
     "url": "https://github.com/gabrielbarker/ColorCode"
