@@ -5,6 +5,7 @@ export default class Theme {
   static generateSettingsFromColorStrings(colourStrings: Number[][]): ThemeSettings {
     let colours = Theme.getColoursFromColourStrings(colourStrings);
     colours = Theme.orderColoursByLightness(colours);
+    colours = Theme.saturateColours(colours);
     const jsonEditorTheme = Theme.createJSONEditorTheme(colours);
     const jsonWorkbenchTheme = Theme.createJSONWorkbenchTheme(colours);
     return new ThemeSettings(jsonWorkbenchTheme, jsonEditorTheme);
@@ -22,6 +23,10 @@ export default class Theme {
     let orderedColours = colours;
     orderedColours.sort((a, b) => a.hsl().array()[2] - b.hsl().array()[2]);
     return orderedColours;
+  }
+
+  private static saturateColours(colours: Color[]): Color[] {
+    return colours.map(color => color.saturate(0.6));
   }
 
   private static createJSONEditorTheme(colours: Color[]): Object {
