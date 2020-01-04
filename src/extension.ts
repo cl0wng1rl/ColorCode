@@ -127,7 +127,7 @@ function saveColors(
   colorStrings: Number[][],
   name: string
 ): void {
-  let savedColors = context.globalState.get(SAVED_COLORS_KEY, []);
+  let savedColors = context.globalState.get(SAVED_COLORS_KEY, {});
   savedColors[name] = colorStrings;
   context.globalState.update(SAVED_COLORS_KEY, savedColors);
 }
@@ -137,12 +137,12 @@ function cacheCurrentColors(context: vscode.ExtensionContext, colorStrings: Numb
 }
 
 function saveCurrentColors(context: vscode.ExtensionContext, name: string): void {
-  const colorStrings = context.globalState.get(CURRENT_COLORS_KEY, []);
+  const colorStrings = context.globalState.get(CURRENT_COLORS_KEY, {});
   saveColors(context, colorStrings, name);
 }
 
 function loadColors(context: vscode.ExtensionContext, name: string): Number[][] {
-  const colors = context.globalState.get(SAVED_COLORS_KEY, []);
+  const colors = context.globalState.get(SAVED_COLORS_KEY, {});
   vscode.window.showInformationMessage(`Theme '${name}' successfully loaded`);
 
   return colors;
