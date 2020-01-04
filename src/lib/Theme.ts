@@ -4,7 +4,8 @@ import ThemeSettings from "./ThemeSettings";
 export default class Theme {
   static generateSettingsFromColorStrings(colourStrings: Number[][]): ThemeSettings {
     let colours = Theme.getColoursFromColourStrings(colourStrings);
-    colours = Theme.orderColoursByLightness(colours);
+    //colours = Theme.shuffleColours(colours);
+    colours = Theme.saturateColours(colours);
     const jsonEditorTheme = Theme.createJSONEditorTheme(colours);
     const jsonWorkbenchTheme = Theme.createJSONWorkbenchTheme(colours);
     return new ThemeSettings(jsonWorkbenchTheme, jsonEditorTheme);
@@ -18,101 +19,123 @@ export default class Theme {
     return colours;
   }
 
-  private static orderColoursByLightness(colours: Color[]) {
-    let orderedColours = colours;
-    orderedColours.sort((a, b) => a.hsl().array()[2] - b.hsl().array()[2]);
-    return orderedColours;
+  private static saturateColours(colours: Color[]): Color[] {
+    return colours.map(color => color.saturate(0.6));
   }
 
   private static createJSONEditorTheme(colours: Color[]): Object {
+    const standardColors = Theme.getStandardColors(colours);
     return {
       textMateRules: [
         {
           scope: ["keyword"],
           settings: {
-            foreground: `${colours[4].hex()}`
+            foreground: standardColors.keywords
           }
         },
         {
-          scope: ["keyword.other.class"],
+          scope: ["keyword.operator.arithmetic.js"],
           settings: {
-            foreground: `${colours[3].lighten(0.4).hex()}`
+            foreground: standardColors.operators
+          }
+        },
+        {
+          scope: ["keyword.operator.new"],
+          settings: {
+            foreground: standardColors.newKeyword
+          }
+        },
+        {
+          scope: ["variable.other.property"],
+          settings: {
+            foreground: standardColors.properties
+          }
+        },
+        {
+          scope: ["storage.type.class"],
+          settings: {
+            foreground: standardColors.classKeyword
+          }
+        },
+        {
+          scope: ["keyword.other.class, entity.name.type.class"],
+          settings: {
+            foreground: standardColors.classNames
           }
         },
         {
           scope: ["storage.modifier"],
           settings: {
-            foreground: `${colours[2].lighten(0.4).hex()}`
+            foreground: standardColors.modifiers
           }
         },
         {
           scope: ["constant.language"],
           settings: {
-            foreground: `${colours[3].saturate(0.9).hex()}`
-          }
-        },
-        {
-          scope: ["constant.escape", "constant.numeric"],
-          settings: {
-            foreground: `${colours[2]
-              .lighten(0.7)
-              .saturate(0.7)
-              .hex()}`
+            foreground: standardColors.booleans
           }
         }
       ],
-      comments: `${colours[0]
-        .lighten(0.6)
-        .saturate(0.5)
-        .hex()}`,
-      functions: `${colours[2]
-        .lighten(0.4)
-        .saturate(0.5)
-        .hex()}`,
-      keywords: `${colours[3]
-        .lighten(0.2)
-        .saturate(0.5)
-        .hex()}`,
-      numbers: `${colours[3]
-        .lighten(0.2)
-        .saturate(0.5)
-        .hex()}`,
-      strings: `${colours[1]
-        .lighten(0.6)
-        .saturate(0.5)
-        .hex()}`,
-      types: `${colours[1]
-        .lighten(0.2)
-        .saturate(0.5)
-        .hex()}`,
-      variables: `${colours[4]
-        .darken(0.3)
-        .saturate(0.5)
-        .hex()}`
+      comments: standardColors.comments,
+      functions: standardColors.functions,
+      keywords: standardColors.keywords,
+      numbers: standardColors.numbers,
+      strings: standardColors.strings,
+      types: standardColors.types,
+      variables: standardColors.variables
+    };
+  }
+  // 23-33-47/57-71-89/126-131-144/154-199-184/235-217-204
+
+  private static createJSONWorkbenchTheme(colours: Color[]): Object {
+    const standardColors = Theme.getStandardColors(colours);
+    let a = 3 + 2;
+    return {
+      foreground: standardColors.foreground,
+      "editor.foreground": standardColors.textForeground,
+      "widget.shadow": standardColors.borderBackground,
+      descriptionForeground: `${colours[3].darken(0.6).hex()}`,
+      errorForeground: `${colours[3].hex()}`,
+      "sideBar.foreground": standardColors.foreground,
+      focusBorder: standardColors.borderBackground,
+      "editor.background": standardColors.background,
+      "sideBar.background": standardColors.background,
+      "sideBar.border": standardColors.contrastBackground,
+      "terminal.background": standardColors.contrastBackground,
+      "selection.background": standardColors.borderBackground,
+      "badge.background": standardColors.trimBackground,
+      "input.background": standardColors.contrastBackground,
+      "panel.background": standardColors.trimBackground,
+      "editorGroupHeader.tabsBackground": standardColors.trimBackground,
+      "tab.activeBackground": standardColors.background,
+      "tab.inactiveBackground": standardColors.contrastBackground,
+      "activityBar.background": standardColors.contrastBackground
     };
   }
 
-  private static createJSONWorkbenchTheme(colours: Color[]): Object {
+  private static getStandardColors(colors: Color[]) {
+    const hslArrays = colors.map(color => color.hsl().array());
     return {
-      focusBorder: `${colours[0].darken(0.5).hex()}`,
-      foreground: `${colours[4].hex()}`,
-      "widget.shadow": `${colours[0].darken(0.6).hex()}`,
-      "selection.background": `${colours[0].darken(0.7).hex()}`,
-      descriptionForeground: `${colours[3].darken(0.6).hex()}`,
-      errorForeground: `${colours[3].hex()}`,
-      "editor.background": `${colours[0].darken(0.7).hex()}`,
-      "sideBar.background": `${colours[0].darken(0.6).hex()}`,
-      "sideBar.foreground": `${colours[3].lighten(0.3).hex()}`,
-      "menu.background": `${colours[0].darken(0.7).hex()}`,
-      "menu.foreground": `${colours[2].hex()}`,
-      "terminal.background": `${colours[0].darken(0.6).hex()}`,
-      "badge.background": `${colours[0].darken(0.8).hex()}`,
-      "input.background": `${colours[0].darken(0.7).hex()}`,
-      "panel.background": `${colours[0].darken(0.6).hex()}`,
-      "tab.activeBackground": `${colours[0].darken(0.8).hex()}`,
-      "tab.inactiveBackground": `${colours[0].darken(0.6).hex()}`,
-      "button.background": `${colours[0].darken(0.8).hex()}`,
-      "activityBar.background": `${colours[0].darken(0.7).hex()}`
+      background: Color.hsl([hslArrays[0][0], hslArrays[0][1], 8]).hex(),
+      contrastBackground: Color.hsl([hslArrays[0][0], hslArrays[0][1], 4]).hex(),
+      trimBackground: Color.hsl([hslArrays[0][0], hslArrays[0][1], 12]).hex(),
+      borderBackground: Color.hsl([hslArrays[0][0], hslArrays[0][1], 15]).hex(),
+      foreground: Color.hsl([hslArrays[3][0], hslArrays[3][1], 80]).hex(),
+      textForeground: Color.hsl([hslArrays[3][0], 90, 70]).hex(),
+      comments: Color.hsl([hslArrays[0][0], 90, 40]).hex(),
+      functions: Color.hsl([hslArrays[2][0], 90, 40]).hex(),
+      keywords: Color.hsl([hslArrays[0][0], 100, 70]).hex(),
+      numbers: Color.hsl([hslArrays[2][0], 90, 30]).hex(),
+      strings: Color.hsl([hslArrays[1][0], 90, 60]).hex(),
+      types: Color.hsl([hslArrays[1][0], 90, 40]).hex(),
+      variables: Color.hsl([hslArrays[4][0], 90, 50]).hex(),
+      booleans: Color.hsl([hslArrays[4][0], 90, 80]).hex(),
+      modifiers: Color.hsl([hslArrays[1][0], 90, 80]).hex(),
+      classKeyword: Color.hsl([hslArrays[3][0], 90, 60]).hex(),
+      classNames: Color.hsl([hslArrays[2][0], 90, 60]).hex(),
+      operators: Color.hsl([hslArrays[2][0], 90, 70]).hex(),
+      newKeyword: Color.hsl([hslArrays[4][0], 90, 60]).hex(),
+      properties: Color.hsl([hslArrays[2][0], 90, 70]).hex()
     };
   }
 }
