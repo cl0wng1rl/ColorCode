@@ -77,3 +77,9 @@ Any relevant changes for each version are documented in the changelog. Please up
 This extension will undoubtably produce less thorough and well balanced themes as the many exceptional themes on VS Code. It is intended as a solution to the problem of growing tired of a theme and wanting to freshen up your workspace, without finding and installing a new theme. I hope it brings some color to your development!
 
 Special thanks to Beth Williamson for the awesome logo design!
+
+## Contributors
+
+Thanks a lot to:
+
+- [@ctf0](https://github.com/ctf0)
