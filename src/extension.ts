@@ -5,6 +5,7 @@ import ThemeSettings from "./lib/ThemeSettings";
 
 const SAVED_COLORS_KEY = "savedColors";
 const CURRENT_COLORS_KEY = "currentColors";
+const THEME_KEY = "[ColorCode]";
 
 export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
@@ -110,10 +111,10 @@ export function activate(context: vscode.ExtensionContext) {
 async function changeConfiguration(settings: ThemeSettings) {
   const workbench = vscode.workspace.getConfiguration("workbench");
   const editor = vscode.workspace.getConfiguration("editor");
-  const workbenchConfig = JSON.parse(JSON.stringify(workbench.colorCustomizations)); // clone config
-  const editorConfig = JSON.parse(JSON.stringify(editor.tokenColorCustomizations)); // clone config
-  workbenchConfig["[ColorCode]"] = settings.colorCustomizations;
-  editorConfig["[ColorCode]"] = settings.tokenColorCustomizations;
+  const workbenchConfig = { ...workbench.colorCustomizations }; // clone config
+  const editorConfig = { ...editor.tokenColorCustomizations }; // clone config
+  workbenchConfig[THEME_KEY] = settings.colorCustomizations;
+  editorConfig[THEME_KEY] = settings.tokenColorCustomizations;
 
   await workbench.update(`colorCustomizations`, workbenchConfig, vscode.ConfigurationTarget.Global);
   await editor.update(`tokenColorCustomizations`, editorConfig, vscode.ConfigurationTarget.Global);
