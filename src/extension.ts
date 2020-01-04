@@ -9,7 +9,7 @@ const CURRENT_COLORS_KEY = "currentColors";
 export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
     vscode.commands.registerCommand("extension.generateTheme", () => {
-      ColorMind.getRandomColourPalette().then((colorStrings) => {
+      ColorMind.getRandomColourPalette().then(colorStrings => {
         const settings = Theme.generateSettingsFromColorStrings(colorStrings);
         changeConfiguration(settings);
         cacheCurrentColors(context, colorStrings);
@@ -19,18 +19,20 @@ export function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(
     vscode.commands.registerCommand("extension.saveCurrentTheme", async () => {
-      vscode.window.showInputBox({ placeHolder: "Enter a name for your theme..." }).then(async (value: any) => {
-        if (!value) {
-          return;
-        }
+      vscode.window
+        .showInputBox({ placeHolder: "Enter a name for your theme..." })
+        .then(async (value: any) => {
+          if (!value) {
+            return;
+          }
 
-        if (!await nameIsUnique(context, value)) {
-          return vscode.window.showErrorMessage(`The name '${value}' is already taken`);
-        }
+          if (!(await nameIsUnique(context, value))) {
+            return vscode.window.showErrorMessage(`The name '${value}' is already taken`);
+          }
 
-        saveCurrentColors(context, value);
-        vscode.window.showInformationMessage(`Theme '${value}' successfully saved`);
-      });
+          saveCurrentColors(context, value);
+          vscode.window.showInformationMessage(`Theme '${value}' successfully saved`);
+        });
     })
   );
 
@@ -77,11 +79,13 @@ export function activate(context: vscode.ExtensionContext) {
       }
       const COPY_LABEL = "Copy To Clipboard";
       const code = generateThemeCode(colorStrings);
-      vscode.window.showInformationMessage(`Theme Code: ${code}`, COPY_LABEL).then((selection: any) => {
-        if (selection === COPY_LABEL) {
-          vscode.env.clipboard.writeText(code);
-        }
-      });
+      vscode.window
+        .showInformationMessage(`Theme Code: ${code}`, COPY_LABEL)
+        .then((selection: any) => {
+          if (selection === COPY_LABEL) {
+            vscode.env.clipboard.writeText(code);
+          }
+        });
     })
   );
 
@@ -107,19 +111,23 @@ export function activate(context: vscode.ExtensionContext) {
 
 async function changeConfiguration(settings: ThemeSettings) {
   let workbenchConfig = Object.assign(
-    {}, 
-    await vscode.workspace.getConfiguration().get('workbench.colorCustomizations'),
-    {"[ColorCode]": settings.colorCustomizations}
-  );
-  
-  let editorConfig = Object.assign(
-    {}, 
-    await vscode.workspace.getConfiguration().get('editor.tokenColorCustomizations'), 
-    {"[ColorCode]": settings.tokenColorCustomizations}
+    {},
+    await vscode.workspace.getConfiguration().get("workbench.colorCustomizations"),
+    { "[ColorCode]": settings.colorCustomizations }
   );
 
-  await vscode.workspace.getConfiguration().update('workbench.colorCustomizations', workbenchConfig, vscode.ConfigurationTarget.Global);
-  await vscode.workspace.getConfiguration().update('editor.tokenColorCustomizations', editorConfig, vscode.ConfigurationTarget.Global);
+  let editorConfig = Object.assign(
+    {},
+    await vscode.workspace.getConfiguration().get("editor.tokenColorCustomizations"),
+    { "[ColorCode]": settings.tokenColorCustomizations }
+  );
+
+  await vscode.workspace
+    .getConfiguration()
+    .update("workbench.colorCustomizations", workbenchConfig, vscode.ConfigurationTarget.Global);
+  await vscode.workspace
+    .getConfiguration()
+    .update("editor.tokenColorCustomizations", editorConfig, vscode.ConfigurationTarget.Global);
 }
 
 function saveColors(
@@ -127,7 +135,7 @@ function saveColors(
   colorStrings: Number[][],
   name: string
 ): void {
-  let savedColors = context.globalState.get(SAVED_COLORS_KEY, {});
+  let savedColors = context.globalState.get(SAVED_COLORS_KEY, <any>{});
   savedColors[name] = colorStrings;
   context.globalState.update(SAVED_COLORS_KEY, savedColors);
 }
@@ -137,15 +145,14 @@ function cacheCurrentColors(context: vscode.ExtensionContext, colorStrings: Numb
 }
 
 function saveCurrentColors(context: vscode.ExtensionContext, name: string): void {
-  const colorStrings = context.globalState.get(CURRENT_COLORS_KEY, {});
+  const colorStrings = context.globalState.get(CURRENT_COLORS_KEY, <any>{});
   saveColors(context, colorStrings, name);
 }
 
 function loadColors(context: vscode.ExtensionContext, name: string): Number[][] {
-  const colors = context.globalState.get(SAVED_COLORS_KEY, {});
+  const colors = context.globalState.get(SAVED_COLORS_KEY, <any>{});
   vscode.window.showInformationMessage(`Theme '${name}' successfully loaded`);
-
-  return colors;
+  return colors[name];
 }
 
 function deleteTheme(context: vscode.ExtensionContext, name: string) {
@@ -156,11 +163,11 @@ function deleteTheme(context: vscode.ExtensionContext, name: string) {
 }
 
 function generateThemeCode(colorStrings: Number[][]): string {
-  return colorStrings.map((color) => color.join("-")).join("/");
+  return colorStrings.map(color => color.join("-")).join("/");
 }
 
 function readThemeCode(code: string): Number[][] {
-  return code.split("/").map((color) => color.split("-").map((val) => Number.parseInt(val)));
+  return code.split("/").map(color => color.split("-").map(val => Number.parseInt(val)));
 }
 
 async function getSavedThemeNames(context: vscode.ExtensionContext): Promise<string[]> {
@@ -169,9 +176,8 @@ async function getSavedThemeNames(context: vscode.ExtensionContext): Promise<str
   return Object.keys(savedColors);
 }
 
-async function nameIsUnique(context: vscode.ExtensionContext, name: string): boolean {
+async function nameIsUnique(context: vscode.ExtensionContext, name: string): Promise<boolean> {
   let names = await getSavedThemeNames(context);
-
   return !names.includes(name);
 }
 
@@ -181,13 +187,13 @@ function stringIsAThemeCode(code: string): boolean {
     return false;
   }
   let validColors = true;
-  splitCode.forEach((color) => {
+  splitCode.forEach(color => {
     const values = color.split("-");
     if (values.length !== 3) {
       console.log(color);
       validColors = false;
     }
-    values.forEach((v) => {
+    values.forEach(v => {
       const n = Number.parseInt(v);
       if (Number.isNaN(n) || n > 256) {
         console.log(v);
@@ -195,9 +201,7 @@ function stringIsAThemeCode(code: string): boolean {
       }
     });
   });
-  console.log(validColors);
-
   return validColors;
 }
 
-export function deactivate() { }
+export function deactivate() {}
