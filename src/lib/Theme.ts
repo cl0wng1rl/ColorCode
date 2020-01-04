@@ -4,7 +4,7 @@ import ThemeSettings from "./ThemeSettings";
 export default class Theme {
   static generateSettingsFromColorStrings(colourStrings: Number[][]): ThemeSettings {
     let colours = Theme.getColoursFromColourStrings(colourStrings);
-    // colours = Theme.orderColoursByLightness(colours);
+    //colours = Theme.shuffleColours(colours);
     colours = Theme.saturateColours(colours);
     const jsonEditorTheme = Theme.createJSONEditorTheme(colours);
     const jsonWorkbenchTheme = Theme.createJSONWorkbenchTheme(colours);
@@ -19,14 +19,12 @@ export default class Theme {
     return colours;
   }
 
-  private static orderColoursByLightness(colours: Color[]) {
-    let orderedColours = colours;
-    orderedColours.sort((a, b) => a.hsl().array()[2] - b.hsl().array()[2]);
-    return orderedColours;
-  }
-
   private static saturateColours(colours: Color[]): Color[] {
     return colours.map(color => color.saturate(0.6));
+  }
+
+  private static shuffleColours(colours: Color[]): Color[] {
+    return colours.sort(() => Math.random() - 0.5);
   }
 
   private static createJSONEditorTheme(colours: Color[]): Object {
@@ -36,34 +34,37 @@ export default class Theme {
         {
           scope: ["keyword"],
           settings: {
-            foreground: `${colours[4].hex()}`
+            foreground: standardColors.keywords
           }
         },
         {
-          scope: ["keyword.other.class"],
+          scope: ["keyword.operator.arithmetic.js"],
           settings: {
-            foreground: `${colours[3].lighten(0.4).hex()}`
+            foreground: standardColors.operators
+          }
+        },
+        {
+          scope: ["storage.type.class"],
+          settings: {
+            foreground: standardColors.classKeyword
+          }
+        },
+        {
+          scope: ["keyword.other.class, entity.name.type.class"],
+          settings: {
+            foreground: standardColors.classNames
           }
         },
         {
           scope: ["storage.modifier"],
           settings: {
-            foreground: `${colours[2].lighten(0.4).hex()}`
+            foreground: standardColors.modifiers
           }
         },
         {
           scope: ["constant.language"],
           settings: {
-            foreground: `${colours[3].saturate(0.9).hex()}`
-          }
-        },
-        {
-          scope: ["constant.escape", "constant.numeric"],
-          settings: {
-            foreground: `${colours[2]
-              .lighten(0.7)
-              .saturate(0.7)
-              .hex()}`
+            foreground: standardColors.booleans
           }
         }
       ],
@@ -106,18 +107,23 @@ export default class Theme {
   private static getStandardColors(colors: Color[]) {
     const hslArrays = colors.map(color => color.hsl().array());
     return {
-      background: Color.hsl([hslArrays[0][0], hslArrays[0][1], 10]).hex(),
-      contrastBackground: Color.hsl([hslArrays[0][0], hslArrays[0][1], 6]).hex(),
-      trimBackground: Color.hsl([hslArrays[0][0], hslArrays[0][1], 15]).hex(),
-      borderBackground: Color.hsl([hslArrays[0][0], hslArrays[0][1], 18]).hex(),
+      background: Color.hsl([hslArrays[0][0], hslArrays[0][1], 8]).hex(),
+      contrastBackground: Color.hsl([hslArrays[0][0], hslArrays[0][1], 4]).hex(),
+      trimBackground: Color.hsl([hslArrays[0][0], hslArrays[0][1], 12]).hex(),
+      borderBackground: Color.hsl([hslArrays[0][0], hslArrays[0][1], 15]).hex(),
       foreground: Color.hsl([hslArrays[3][0], hslArrays[3][1], 80]).hex(),
-      comments: Color.hsl([hslArrays[0][0], hslArrays[0][1] * 1.2, 60]).hex(),
-      functions: Color.hsl([hslArrays[2][0], hslArrays[2][1] * 1.2, 40]).hex(),
-      keywords: Color.hsl([hslArrays[3][0], hslArrays[3][1] * 1.2, 30]).hex(),
-      numbers: Color.hsl([hslArrays[2][0], hslArrays[2][1] * 1.2, 30]).hex(),
-      strings: Color.hsl([hslArrays[1][0], hslArrays[1][1] * 1.2, 60]).hex(),
-      types: Color.hsl([hslArrays[1][0], hslArrays[1][1] * 1.2, 40]).hex(),
-      variables: Color.hsl([hslArrays[4][0], hslArrays[4][1] * 1.2, 50]).hex()
+      comments: Color.hsl([hslArrays[0][0], 90, 60]).hex(),
+      functions: Color.hsl([hslArrays[2][0], 90, 40]).hex(),
+      keywords: Color.hsl([hslArrays[3][0], 90, 30]).hex(),
+      numbers: Color.hsl([hslArrays[2][0], 90, 30]).hex(),
+      strings: Color.hsl([hslArrays[1][0], 90, 60]).hex(),
+      types: Color.hsl([hslArrays[1][0], 90, 40]).hex(),
+      variables: Color.hsl([hslArrays[4][0], 90, 50]).hex(),
+      booleans: Color.hsl([hslArrays[4][0], 90, 80]).hex(),
+      modifiers: Color.hsl([hslArrays[1][0], 90, 80]).hex(),
+      classKeyword: Color.hsl([hslArrays[3][0], 90, 80]).hex(),
+      classNames: Color.hsl([hslArrays[3][0], 90, 60]).hex(),
+      operators: Color.hsl([hslArrays[2][0], 90, 70]).hex()
     };
   }
 }
