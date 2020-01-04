@@ -23,10 +23,6 @@ export default class Theme {
     return colours.map(color => color.saturate(0.6));
   }
 
-  private static shuffleColours(colours: Color[]): Color[] {
-    return colours.sort(() => Math.random() - 0.5);
-  }
-
   private static createJSONEditorTheme(colours: Color[]): Object {
     const standardColors = Theme.getStandardColors(colours);
     return {
@@ -41,6 +37,18 @@ export default class Theme {
           scope: ["keyword.operator.arithmetic.js"],
           settings: {
             foreground: standardColors.operators
+          }
+        },
+        {
+          scope: ["keyword.operator.new"],
+          settings: {
+            foreground: standardColors.newKeyword
+          }
+        },
+        {
+          scope: ["variable.other.property"],
+          settings: {
+            foreground: standardColors.properties
           }
         },
         {
@@ -81,9 +89,10 @@ export default class Theme {
 
   private static createJSONWorkbenchTheme(colours: Color[]): Object {
     const standardColors = Theme.getStandardColors(colours);
+    let a = 3 + 2;
     return {
       foreground: standardColors.foreground,
-      "editor.foreground": standardColors.foreground,
+      "editor.foreground": standardColors.textForeground,
       "widget.shadow": standardColors.borderBackground,
       descriptionForeground: `${colours[3].darken(0.6).hex()}`,
       errorForeground: `${colours[3].hex()}`,
@@ -112,18 +121,21 @@ export default class Theme {
       trimBackground: Color.hsl([hslArrays[0][0], hslArrays[0][1], 12]).hex(),
       borderBackground: Color.hsl([hslArrays[0][0], hslArrays[0][1], 15]).hex(),
       foreground: Color.hsl([hslArrays[3][0], hslArrays[3][1], 80]).hex(),
-      comments: Color.hsl([hslArrays[0][0], 90, 60]).hex(),
+      textForeground: Color.hsl([hslArrays[3][0], 90, 70]).hex(),
+      comments: Color.hsl([hslArrays[0][0], 90, 40]).hex(),
       functions: Color.hsl([hslArrays[2][0], 90, 40]).hex(),
-      keywords: Color.hsl([hslArrays[3][0], 90, 30]).hex(),
+      keywords: Color.hsl([hslArrays[0][0], 100, 70]).hex(),
       numbers: Color.hsl([hslArrays[2][0], 90, 30]).hex(),
       strings: Color.hsl([hslArrays[1][0], 90, 60]).hex(),
       types: Color.hsl([hslArrays[1][0], 90, 40]).hex(),
       variables: Color.hsl([hslArrays[4][0], 90, 50]).hex(),
       booleans: Color.hsl([hslArrays[4][0], 90, 80]).hex(),
       modifiers: Color.hsl([hslArrays[1][0], 90, 80]).hex(),
-      classKeyword: Color.hsl([hslArrays[3][0], 90, 80]).hex(),
-      classNames: Color.hsl([hslArrays[3][0], 90, 60]).hex(),
-      operators: Color.hsl([hslArrays[2][0], 90, 70]).hex()
+      classKeyword: Color.hsl([hslArrays[3][0], 90, 60]).hex(),
+      classNames: Color.hsl([hslArrays[2][0], 90, 60]).hex(),
+      operators: Color.hsl([hslArrays[2][0], 90, 70]).hex(),
+      newKeyword: Color.hsl([hslArrays[4][0], 90, 60]).hex(),
+      properties: Color.hsl([hslArrays[2][0], 90, 70]).hex()
     };
   }
 }
