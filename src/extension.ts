@@ -9,11 +9,24 @@ const CURRENT_COLORS_KEY = "currentColors";
 export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
     vscode.commands.registerCommand("extension.generateTheme", () => {
-      ColorMind.getRandomColourPalette().then(colorStrings => {
-        const settings = Theme.generateSettingsFromColorStrings(colorStrings);
-        changeConfiguration(settings);
-        cacheCurrentColors(context, colorStrings);
-      });
+      let resolved = false;
+
+      setTimeout(() => {
+        if (!resolved) {
+          vscode.window.showInformationMessage("Trying to connect to Colormind.io...");
+        }
+      }, 5000);
+
+      ColorMind.getRandomColourPalette()
+        .then(colorStrings => {
+          resolved = true;
+          const settings = Theme.generateSettingsFromColorStrings(colorStrings);
+          changeConfiguration(settings);
+          cacheCurrentColors(context, colorStrings);
+        })
+        .catch(() => {
+          vscode.window.showInformationMessage(`Unable to connect to Colormind.io`);
+        });
     })
   );
 
