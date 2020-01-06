@@ -42,19 +42,27 @@ export default class Theme {
         {
           scope: ["keyword.operator.new"],
           settings: {
-            foreground: standardColors.newKeyword
+            foreground: standardColors.newKeyword,
+            fontStyle: "bold"
           }
         },
         {
-          scope: ["variable.other.property"],
+          scope: [
+            "variable.other.property",
+            "storage.type.property.js",
+            "storage.type.property.ts",
+            "storage.type.property.tsx"
+          ],
           settings: {
-            foreground: standardColors.properties
+            foreground: standardColors.properties,
+            fontStyle: "italic"
           }
         },
         {
           scope: ["storage.type.class"],
           settings: {
-            foreground: standardColors.classKeyword
+            foreground: standardColors.classKeyword,
+            fontStyle: "bold"
           }
         },
         {
@@ -72,7 +80,28 @@ export default class Theme {
         {
           scope: ["constant.language"],
           settings: {
-            foreground: standardColors.booleans
+            foreground: standardColors.booleans,
+            fontStyle: "italic"
+          }
+        },
+        {
+          scope: ["support.type.property-name.json"],
+          settings: {
+            foreground: standardColors.keywords
+          }
+        },
+        {
+          scope: ["support.constant.json"],
+          settings: {
+            foreground: standardColors.variables
+          }
+        },
+        {
+          scope: [
+            "meta.structure.dictionary.json meta.structure.dictionary.value constant.language"
+          ],
+          settings: {
+            foreground: standardColors.classKeyword
           }
         }
       ],
