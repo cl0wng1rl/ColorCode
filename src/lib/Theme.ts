@@ -83,6 +83,26 @@ export default class Theme {
             foreground: standardColors.booleans,
             fontStyle: "italic"
           }
+        },
+        {
+          scope: ["support.type.property-name.json"],
+          settings: {
+            foreground: standardColors.keywords
+          }
+        },
+        {
+          scope: ["support.constant.json"],
+          settings: {
+            foreground: standardColors.variables
+          }
+        },
+        {
+          scope: [
+            "meta.structure.dictionary.json meta.structure.dictionary.value constant.language"
+          ],
+          settings: {
+            foreground: standardColors.classKeyword
+          }
         }
       ],
       comments: standardColors.comments,
