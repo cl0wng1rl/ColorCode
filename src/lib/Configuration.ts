@@ -7,7 +7,6 @@ export default class Configuration {
   private context: ExtensionContext;
   private editorConfig: vscode.WorkspaceConfiguration;
   private workbenchConfig: vscode.WorkspaceConfiguration;
-
   constructor(context: ExtensionContext) {
     this.context = context;
     this.editorConfig = this.getEditorConfig();

@@ -9,13 +9,13 @@ export default class LoadCommand implements Command {
   private configuration: Configuration;
   private validator: InputValidator;
 
-  public static getInstance(context: vscode.ExtensionContext): LoadCommand {
+  public static getInstance(context: ExtensionContext): LoadCommand {
     return new LoadCommand(context);
   }
 
-  private constructor(context: vscode.ExtensionContext) {
-    this.context = new ExtensionContext(context);
-    this.configuration = new Configuration(this.context);
+  private constructor(context: ExtensionContext) {
+    this.context = context;
+    this.configuration = new Configuration(context);
     this.validator = new InputValidator();
   }
 
@@ -45,12 +45,11 @@ export default class LoadCommand implements Command {
   }
 
   public static getTestingInstance(
-    vscodeExtensionContext: vscode.ExtensionContext,
     context: ExtensionContext,
     configuration: Configuration,
     validator: InputValidator
   ): LoadCommand {
-    const loadCommand = new LoadCommand(vscodeExtensionContext);
+    const loadCommand = new LoadCommand(context);
     loadCommand.context = context;
     loadCommand.configuration = configuration;
     loadCommand.validator = validator;

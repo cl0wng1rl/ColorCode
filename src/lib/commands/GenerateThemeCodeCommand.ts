@@ -5,12 +5,12 @@ import Command from "./Command";
 export default class GenerateThemeCodeCommand implements Command {
   private context: ExtensionContext;
 
-  public static getInstance(context: vscode.ExtensionContext) {
+  public static getInstance(context: ExtensionContext) {
     return new GenerateThemeCodeCommand(context);
   }
 
-  private constructor(context: vscode.ExtensionContext) {
-    this.context = new ExtensionContext(context);
+  private constructor(context: ExtensionContext) {
+    this.context = context;
   }
 
   public execute(): void {
@@ -36,11 +36,8 @@ export default class GenerateThemeCodeCommand implements Command {
     return colorStrings.map(color => color.join("-")).join("/");
   }
 
-  public static getTestingInstance(
-    vscodeExtensionContext: vscode.ExtensionContext,
-    context: ExtensionContext
-  ): GenerateThemeCodeCommand {
-    const generateThemeCodeCommand = new GenerateThemeCodeCommand(vscodeExtensionContext);
+  public static getTestingInstance(context: ExtensionContext): GenerateThemeCodeCommand {
+    const generateThemeCodeCommand = new GenerateThemeCodeCommand(context);
     generateThemeCodeCommand.context = context;
     return generateThemeCodeCommand;
   }

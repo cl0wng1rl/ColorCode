@@ -9,13 +9,13 @@ export default class DeleteCommand implements Command {
   private configuration: Configuration;
   private validator: InputValidator;
 
-  public static getInstance(context: vscode.ExtensionContext): DeleteCommand {
+  public static getInstance(context: ExtensionContext): DeleteCommand {
     return new DeleteCommand(context);
   }
 
-  private constructor(context: vscode.ExtensionContext) {
-    this.context = new ExtensionContext(context);
-    this.configuration = new Configuration(this.context);
+  private constructor(context: ExtensionContext) {
+    this.context = context;
+    this.configuration = new Configuration(context);
     this.validator = new InputValidator();
   }
 
@@ -45,12 +45,11 @@ export default class DeleteCommand implements Command {
   }
 
   public static getTestingInstance(
-    vscodeExtensionContext: vscode.ExtensionContext,
     context: ExtensionContext,
     configuration: Configuration,
     validator: InputValidator
   ): DeleteCommand {
-    const deleteCommand = new DeleteCommand(vscodeExtensionContext);
+    const deleteCommand = new DeleteCommand(context);
     deleteCommand.context = context;
     deleteCommand.configuration = configuration;
     deleteCommand.validator = validator;

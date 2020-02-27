@@ -5,17 +5,15 @@ import Configuration from "../Configuration";
 import Command from "./Command";
 
 export default class GenerateCommand implements Command {
-  private context: ExtensionContext;
-  private resolved: boolean = false;
   private configuration: Configuration;
+  private resolved: boolean = false;
 
-  public static getInstance(context: vscode.ExtensionContext): GenerateCommand {
+  public static getInstance(context: ExtensionContext): GenerateCommand {
     return new GenerateCommand(context);
   }
 
-  private constructor(context: vscode.ExtensionContext) {
-    this.context = new ExtensionContext(context);
-    this.configuration = new Configuration(this.context);
+  private constructor(context: ExtensionContext) {
+    this.configuration = new Configuration(context);
   }
 
   public execute(): void {
@@ -45,12 +43,10 @@ export default class GenerateCommand implements Command {
   }
 
   public static getTestingInstance(
-    vscodeExtensionContext: vscode.ExtensionContext,
     context: ExtensionContext,
     configuration: Configuration
   ): GenerateCommand {
-    const generateCommand = new GenerateCommand(vscodeExtensionContext);
-    generateCommand.context = context;
+    const generateCommand = new GenerateCommand(context);
     generateCommand.configuration = configuration;
     return generateCommand;
   }

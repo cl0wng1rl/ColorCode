@@ -5,17 +5,15 @@ import InputValidator from "../InputValidator";
 import Command from "./Command";
 
 export default class ReadThemeCodeCommand implements Command {
-  private context: ExtensionContext;
   private configuration: Configuration;
   private validator: InputValidator;
 
-  public static getInstance(context: vscode.ExtensionContext): ReadThemeCodeCommand {
+  public static getInstance(context: ExtensionContext): ReadThemeCodeCommand {
     return new ReadThemeCodeCommand(context);
   }
 
-  private constructor(context: vscode.ExtensionContext) {
-    this.context = new ExtensionContext(context);
-    this.configuration = new Configuration(this.context);
+  private constructor(extensionContext: ExtensionContext) {
+    this.configuration = new Configuration(extensionContext);
     this.validator = new InputValidator();
   }
 
@@ -40,12 +38,11 @@ export default class ReadThemeCodeCommand implements Command {
   }
 
   public static getTestingInstance(
-    context: vscode.ExtensionContext,
+    context: ExtensionContext,
     configuration: Configuration,
     validator: InputValidator
   ): ReadThemeCodeCommand {
     const rtcc = new ReadThemeCodeCommand(context);
-    rtcc.context = new ExtensionContext(context);
     rtcc.configuration = configuration;
     rtcc.validator = validator;
     return rtcc;

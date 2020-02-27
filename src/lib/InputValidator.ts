@@ -1,5 +1,4 @@
 import * as vscode from "vscode";
-import Configuration from "./Configuration";
 
 export default class InputValidator {
   private valid: boolean = false;

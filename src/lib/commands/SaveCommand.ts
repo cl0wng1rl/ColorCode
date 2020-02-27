@@ -9,13 +9,13 @@ export default class SaveCommand implements Command {
   private configuration: Configuration;
   private validator: InputValidator;
 
-  public static getInstance(context: vscode.ExtensionContext): SaveCommand {
+  public static getInstance(context: ExtensionContext): SaveCommand {
     return new SaveCommand(context);
   }
 
-  private constructor(context: vscode.ExtensionContext) {
-    this.context = new ExtensionContext(context);
-    this.configuration = new Configuration(this.context);
+  private constructor(context: ExtensionContext) {
+    this.context = context;
+    this.configuration = new Configuration(context);
     this.validator = new InputValidator();
   }
 
@@ -46,12 +46,11 @@ export default class SaveCommand implements Command {
   }
 
   public static getTestingInstance(
-    vscodeExtensionContext: vscode.ExtensionContext,
     context: ExtensionContext,
     configuration: Configuration,
     validator: InputValidator
   ): SaveCommand {
-    const saveCommand = new SaveCommand(vscodeExtensionContext);
+    const saveCommand = new SaveCommand(context);
     saveCommand.context = context;
     saveCommand.configuration = configuration;
     saveCommand.validator = validator;

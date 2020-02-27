@@ -6,7 +6,6 @@ import DeleteCommand from "./DeleteCommand";
 import GenerateThemeCodeCommand from "./GenerateThemeCodeCommand";
 import ReadThemeCodeCommand from "./ReadThemeCodeCommand";
 import ExtensionContext from "../ExtensionContext";
-import Configuration from "../Configuration";
 
 export default class CommandSet {
   private generateCommand: GenerateCommand;
@@ -17,12 +16,13 @@ export default class CommandSet {
   private readThemeCodeCommand: ReadThemeCodeCommand;
 
   constructor(vsCodeExtensionContext: vscode.ExtensionContext) {
-    this.generateCommand = GenerateCommand.getInstance(vsCodeExtensionContext);
-    this.saveCommand = SaveCommand.getInstance(vsCodeExtensionContext);
-    this.loadCommand = LoadCommand.getInstance(vsCodeExtensionContext);
-    this.deleteCommand = DeleteCommand.getInstance(vsCodeExtensionContext);
-    this.generateThemeCodeCommand = GenerateThemeCodeCommand.getInstance(vsCodeExtensionContext);
-    this.readThemeCodeCommand = ReadThemeCodeCommand.getInstance(vsCodeExtensionContext);
+    const context: ExtensionContext = new ExtensionContext(vsCodeExtensionContext);
+    this.generateCommand = GenerateCommand.getInstance(context);
+    this.saveCommand = SaveCommand.getInstance(context);
+    this.loadCommand = LoadCommand.getInstance(context);
+    this.deleteCommand = DeleteCommand.getInstance(context);
+    this.generateThemeCodeCommand = GenerateThemeCodeCommand.getInstance(context);
+    this.readThemeCodeCommand = ReadThemeCodeCommand.getInstance(context);
   }
 
   public generate(): void {
