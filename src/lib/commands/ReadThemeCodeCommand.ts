@@ -1,24 +1,25 @@
-import * as vscode from "vscode";
-import ExtensionContext from "../ExtensionContext";
 import Configuration from "../Configuration";
 import InputValidator from "../InputValidator";
 import Command from "./Command";
+import VSCodeContext from "../VSCodeContext";
 
 export default class ReadThemeCodeCommand implements Command {
+  private context: VSCodeContext;
   private configuration: Configuration;
   private validator: InputValidator;
 
-  public static getInstance(context: ExtensionContext): ReadThemeCodeCommand {
+  public static getInstance(context: VSCodeContext): ReadThemeCodeCommand {
     return new ReadThemeCodeCommand(context);
   }
 
-  private constructor(extensionContext: ExtensionContext) {
-    this.configuration = new Configuration(extensionContext);
-    this.validator = new InputValidator();
+  private constructor(context: VSCodeContext) {
+    this.context = context;
+    this.configuration = context.getConfiguration();
+    this.validator = context.getInputValidator();
   }
 
   public execute(): void {
-    vscode.window.showInputBox({ placeHolder: "Enter your code..." }).then(this.readThemeCode);
+    this.context.showInputBox({ placeHolder: "Enter your code..." }).then(this.readThemeCode);
   }
 
   private readThemeCode(code: any) {
@@ -35,16 +36,5 @@ export default class ReadThemeCodeCommand implements Command {
 
   private setThemeWithColorStrings(colorStrings: number[][]): void {
     this.configuration.updateConfiguration(colorStrings);
-  }
-
-  public static getTestingInstance(
-    context: ExtensionContext,
-    configuration: Configuration,
-    validator: InputValidator
-  ): ReadThemeCodeCommand {
-    const rtcc = new ReadThemeCodeCommand(context);
-    rtcc.configuration = configuration;
-    rtcc.validator = validator;
-    return rtcc;
   }
 }

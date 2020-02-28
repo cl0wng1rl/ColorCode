@@ -1,22 +1,20 @@
 import * as vscode from "vscode";
-import ExtensionContext from "../ExtensionContext";
 import Configuration from "../Configuration";
 import InputValidator from "../InputValidator";
 import Command from "./Command";
+import VSCodeContext from "../VSCodeContext";
 
 export default class DeleteCommand implements Command {
-  private context: ExtensionContext;
   private configuration: Configuration;
   private validator: InputValidator;
 
-  public static getInstance(context: ExtensionContext): DeleteCommand {
+  public static getInstance(context: VSCodeContext): DeleteCommand {
     return new DeleteCommand(context);
   }
 
-  private constructor(context: ExtensionContext) {
-    this.context = context;
-    this.configuration = new Configuration(context);
-    this.validator = new InputValidator();
+  private constructor(context: VSCodeContext) {
+    this.configuration = context.getConfiguration();
+    this.validator = context.getInputValidator();
   }
 
   public execute(): void {
@@ -38,21 +36,9 @@ export default class DeleteCommand implements Command {
   }
 
   private deleteTheme(name: string) {
-    const savedColors = JSON.parse(JSON.stringify(this.context.getSavedColors() || {}));
+    const savedColors = JSON.parse(JSON.stringify(this.configuration.getSavedColors()));
     delete savedColors[name];
-    this.context.updateSavedColors(savedColors);
+    this.configuration.updateSavedColors(savedColors);
     vscode.window.showInformationMessage(`Theme '${name}' successfully deleted`);
-  }
-
-  public static getTestingInstance(
-    context: ExtensionContext,
-    configuration: Configuration,
-    validator: InputValidator
-  ): DeleteCommand {
-    const deleteCommand = new DeleteCommand(context);
-    deleteCommand.context = context;
-    deleteCommand.configuration = configuration;
-    deleteCommand.validator = validator;
-    return deleteCommand;
   }
 }

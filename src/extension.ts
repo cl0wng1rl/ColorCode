@@ -1,33 +1,31 @@
 import * as vscode from "vscode";
 import CommandSet from "./lib/commands/CommandSet";
+import VSCodeContext from "./lib/VSCodeContext";
 
 export function activate(context: vscode.ExtensionContext) {
-  const commands: CommandSet = new CommandSet(context);
+  const vsCodeContext = new VSCodeContext(context);
+  const commands: CommandSet = new CommandSet(vsCodeContext);
 
   context.subscriptions.push(
-    vscode.commands.registerCommand("extension.generateTheme", () => commands.generate())
+    vscode.commands.registerCommand("extension.generateTheme", commands.generate)
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand("extension.saveCurrentTheme", async () => commands.save())
+    vscode.commands.registerCommand("extension.saveCurrentTheme", commands.save)
+  );
+
+  context.subscriptions.push(vscode.commands.registerCommand("extension.loadTheme", commands.load));
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand("extension.deleteTheme", commands.delete)
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand("extension.loadTheme", async () => commands.load())
+    vscode.commands.registerCommand("extension.generateThemeCode", commands.generateThemeCode)
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand("extension.deleteTheme", async () => commands.delete())
-  );
-
-  context.subscriptions.push(
-    vscode.commands.registerCommand("extension.generateThemeCode", () =>
-      commands.generateThemeCode()
-    )
-  );
-
-  context.subscriptions.push(
-    vscode.commands.registerCommand("extension.readThemeCode", () => commands.readThemeCode())
+    vscode.commands.registerCommand("extension.readThemeCode", commands.readThemeCode)
   );
 }
 export function deactivate() {}

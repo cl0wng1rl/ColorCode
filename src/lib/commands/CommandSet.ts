@@ -1,11 +1,10 @@
-import * as vscode from "vscode";
 import GenerateCommand from "./GenerateCommand";
 import SaveCommand from "./SaveCommand";
 import LoadCommand from "./LoadCommand";
 import DeleteCommand from "./DeleteCommand";
 import GenerateThemeCodeCommand from "./GenerateThemeCodeCommand";
 import ReadThemeCodeCommand from "./ReadThemeCodeCommand";
-import ExtensionContext from "../ExtensionContext";
+import VSCodeContext from "../VSCodeContext";
 
 export default class CommandSet {
   private generateCommand: GenerateCommand;
@@ -15,8 +14,7 @@ export default class CommandSet {
   private generateThemeCodeCommand: GenerateThemeCodeCommand;
   private readThemeCodeCommand: ReadThemeCodeCommand;
 
-  constructor(vsCodeExtensionContext: vscode.ExtensionContext) {
-    const context: ExtensionContext = new ExtensionContext(vsCodeExtensionContext);
+  constructor(context: VSCodeContext) {
     this.generateCommand = GenerateCommand.getInstance(context);
     this.saveCommand = SaveCommand.getInstance(context);
     this.loadCommand = LoadCommand.getInstance(context);

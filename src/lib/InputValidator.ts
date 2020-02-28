@@ -1,7 +1,12 @@
-import * as vscode from "vscode";
+import VSCodeContext from "./VSCodeContext";
 
 export default class InputValidator {
   private valid: boolean = false;
+  private context: VSCodeContext;
+
+  public constructor(context: VSCodeContext) {
+    this.context = context;
+  }
 
   public isValid(): boolean {
     return this.valid;
@@ -39,7 +44,7 @@ export default class InputValidator {
     if (!valueToValidate) {
       this.valid = false;
     } else if (conditionOfError) {
-      vscode.window.showInformationMessage(errorMessage);
+      this.context.showInformationMessage(errorMessage);
       this.valid = false;
     } else {
       this.valid = true;

@@ -1,16 +1,34 @@
-import * as vscode from "vscode";
+import { WorkspaceConfiguration } from "vscode";
+
 import Theme from "./Theme";
 import ThemeSettings from "./ThemeSettings";
-import ExtensionContext from "./ExtensionContext";
+import VSCodeContext from "./VSCodeContext";
 
 export default class Configuration {
-  private context: ExtensionContext;
-  private editorConfig: vscode.WorkspaceConfiguration;
-  private workbenchConfig: vscode.WorkspaceConfiguration;
-  constructor(context: ExtensionContext) {
-    this.context = context;
-    this.editorConfig = this.getEditorConfig();
-    this.workbenchConfig = this.getWorkbenchConfig();
+  private static SAVED_COLORS_KEY = "savedColors";
+  private static CURRENT_COLORS_KEY = "currentColors";
+
+  private context: VSCodeContext;
+  private editorConfig: WorkspaceConfiguration | any;
+  private workbenchConfig: WorkspaceConfiguration | any;
+
+  constructor(vscodeContext: VSCodeContext) {
+    this.context = vscodeContext;
+    this.editorConfig = vscodeContext.getExtensionConfiguration("editor");
+    this.workbenchConfig = vscodeContext.getExtensionConfiguration("workbench");
+  }
+
+  public getSavedThemeNames(): string[] {
+    const savedColors = this.getCurrentColors();
+    return Object.keys(savedColors);
+  }
+
+  public getCurrentColors(): number[][] {
+    return this.context.globalState.get<number[][]>(Configuration.CURRENT_COLORS_KEY) || [];
+  }
+
+  public getSavedColors(): any {
+    return this.context.globalState.get(Configuration.SAVED_COLORS_KEY) || [];
   }
 
   public updateConfiguration(colorStrings: number[][]) {
@@ -18,20 +36,15 @@ export default class Configuration {
     const settings = theme.generateSettingsFromColorStrings(colorStrings);
     this.updateEditorConfig(settings);
     this.updateWorkbenchConfig(settings);
-    this.cacheCurrentColors(colorStrings);
+    this.updateCurrentColors(colorStrings);
   }
 
-  public getSavedThemeNames(): string[] {
-    const savedColors = this.context.getCurrentColors();
-    return Object.keys(savedColors);
+  public updateCurrentColors(colorStrings: number[][]): void {
+    this.context.globalState.update(Configuration.CURRENT_COLORS_KEY, colorStrings);
   }
 
-  private getEditorConfig(): vscode.WorkspaceConfiguration {
-    return vscode.workspace.getConfiguration("editor");
-  }
-
-  private getWorkbenchConfig(): vscode.WorkspaceConfiguration {
-    return vscode.workspace.getConfiguration("workbench");
+  public updateSavedColors(colorStrings: number[][]): void {
+    this.context.globalState.update(Configuration.SAVED_COLORS_KEY, colorStrings);
   }
 
   private updateEditorConfig(settings: ThemeSettings): void {
@@ -39,7 +52,7 @@ export default class Configuration {
     this.editorConfig.update(
       "tokenColorCustomizations",
       newEditorConfig,
-      vscode.ConfigurationTarget.Global
+      this.context.GlobalConfigurationTarget
     );
   }
 
@@ -48,7 +61,7 @@ export default class Configuration {
     this.workbenchConfig.update(
       "colorCustomizations",
       newWorkbenchConfig,
-      vscode.ConfigurationTarget.Global
+      this.context.GlobalConfigurationTarget
     );
   }
 
@@ -62,9 +75,5 @@ export default class Configuration {
     return Object.assign({}, this.workbenchConfig.get("tokenColorCustomizations"), {
       "[ColorCode]": settings.colorCustomizations
     });
-  }
-
-  private cacheCurrentColors(colorStrings: number[][]): void {
-    this.context.updateCurrentColors(colorStrings);
   }
 }

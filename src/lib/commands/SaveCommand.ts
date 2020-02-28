@@ -1,26 +1,25 @@
-import * as vscode from "vscode";
-import ExtensionContext from "../ExtensionContext";
 import Configuration from "../Configuration";
 import InputValidator from "../InputValidator";
 import Command from "./Command";
+import VSCodeContext from "../VSCodeContext";
 
 export default class SaveCommand implements Command {
-  private context: ExtensionContext;
+  private context: VSCodeContext;
   private configuration: Configuration;
   private validator: InputValidator;
 
-  public static getInstance(context: ExtensionContext): SaveCommand {
+  public static getInstance(context: VSCodeContext): SaveCommand {
     return new SaveCommand(context);
   }
 
-  private constructor(context: ExtensionContext) {
+  private constructor(context: VSCodeContext) {
     this.context = context;
-    this.configuration = new Configuration(context);
-    this.validator = new InputValidator();
+    this.configuration = context.getConfiguration();
+    this.validator = context.getInputValidator();
   }
 
   public execute(): void {
-    vscode.window
+    this.context
       .showInputBox({ placeHolder: "Enter a name for your theme..." })
       .then(this.saveColorsIfNameIsValid);
   }
@@ -30,30 +29,18 @@ export default class SaveCommand implements Command {
     this.validator.validateName(value, currentNames);
     if (this.validator.isValid()) {
       this.saveCurrentColors(value);
-      vscode.window.showInformationMessage(`Theme '${value}' successfully saved`);
+      this.context.showInformationMessage(`Theme '${value}' successfully saved`);
     }
   }
 
   private saveCurrentColors(name: string): void {
-    const currentColors = this.context.getCurrentColors();
+    const currentColors = this.configuration.getCurrentColors();
     this.saveColors(currentColors, name);
   }
 
   private saveColors(colorStrings: number[][], name: string): void {
-    let savedColors = this.context.getSavedColors();
+    let savedColors = this.configuration.getSavedColors();
     savedColors[name] = colorStrings;
-    this.context.updateSavedColors(savedColors);
-  }
-
-  public static getTestingInstance(
-    context: ExtensionContext,
-    configuration: Configuration,
-    validator: InputValidator
-  ): SaveCommand {
-    const saveCommand = new SaveCommand(context);
-    saveCommand.context = context;
-    saveCommand.configuration = configuration;
-    saveCommand.validator = validator;
-    return saveCommand;
+    this.configuration.updateSavedColors(savedColors);
   }
 }
