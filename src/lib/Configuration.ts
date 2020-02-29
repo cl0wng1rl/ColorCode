@@ -49,12 +49,12 @@ export default class Configuration {
     this.updateCurrentColors(colorStrings);
   }
 
-  public updateCurrentColors(colorStrings: number[][]): void {
-    this.context.globalState.update(Configuration.CURRENT_COLORS_KEY, colorStrings);
-  }
-
   public updateSavedColors(colorStrings: number[][]): void {
     this.context.globalState.update(Configuration.SAVED_COLORS_KEY, colorStrings);
+  }
+
+  private updateCurrentColors(colorStrings: number[][]): void {
+    this.context.globalState.update(Configuration.CURRENT_COLORS_KEY, colorStrings);
   }
 
   private updateEditorConfig(settings: ThemeSettings): void {
