@@ -1,12 +1,10 @@
 import Configuration from "../Configuration";
-import InputValidator from "../InputValidator";
 import Command from "./Command";
 import VSCodeContext from "../VSCodeContext";
 
 export default class SaveCommand implements Command {
   private context: VSCodeContext;
   private configuration: Configuration;
-  private validator: InputValidator;
 
   public static getInstance(context: VSCodeContext): SaveCommand {
     return new SaveCommand(context);
@@ -15,7 +13,6 @@ export default class SaveCommand implements Command {
   private constructor(context: VSCodeContext) {
     this.context = context;
     this.configuration = context.getConfiguration();
-    this.validator = context.getInputValidator();
   }
 
   public execute(): void {
@@ -25,9 +22,8 @@ export default class SaveCommand implements Command {
   }
 
   private saveColorsIfNameIsValid(value: any) {
-    const currentNames: string[] = this.configuration.getSavedThemeNames();
-    this.validator.validateName(value, currentNames);
-    if (this.validator.isValid()) {
+    const currentNames = this.configuration.getSavedThemeNames();
+    if (currentNames.length) {
       this.saveCurrentColors(value);
       this.context.showInformationMessage(`Theme '${value}' successfully saved`);
     }

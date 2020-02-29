@@ -1,6 +1,5 @@
 import * as vscode from "vscode";
 import Configuration from "./Configuration";
-import InputValidator from "./InputValidator";
 
 export default class VSCodeContext {
   private context: vscode.ExtensionContext;
@@ -19,9 +18,5 @@ export default class VSCodeContext {
 
   public getConfiguration(): Configuration {
     return new Configuration(this);
-  }
-
-  public getInputValidator(): InputValidator {
-    return new InputValidator(this);
   }
 }

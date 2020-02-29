@@ -1,12 +1,10 @@
 import Configuration from "../Configuration";
-import InputValidator from "../InputValidator";
 import Command from "./Command";
 import VSCodeContext from "../VSCodeContext";
 
 export default class LoadCommand implements Command {
   private context: VSCodeContext;
   private configuration: Configuration;
-  private validator: InputValidator;
 
   public static getInstance(context: VSCodeContext): LoadCommand {
     return new LoadCommand(context);
@@ -15,13 +13,11 @@ export default class LoadCommand implements Command {
   private constructor(context: VSCodeContext) {
     this.context = context;
     this.configuration = context.getConfiguration();
-    this.validator = context.getInputValidator();
   }
 
   public execute(): void {
     const themeNames = this.configuration.getSavedThemeNames();
-    this.validator.validateSavedThemes(themeNames);
-    if (this.validator.isValid()) {
+    if (themeNames.length) {
       this.pickTheme(themeNames);
     }
   }

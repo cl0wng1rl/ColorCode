@@ -28,7 +28,7 @@ export default class InputValidator {
     );
   }
 
-  public validateSavedThemes(themeNames: string[]) {
+  public validateSavedThemes(themeNames: any) {
     this.showErrorMessageBasedOnCondition(
       themeNames,
       !themeNames.length,
