@@ -1,9 +1,9 @@
-import * as vscode from "vscode";
 import Configuration from "../Configuration";
 import Command from "./Command";
 import VSCodeContext from "../VSCodeContext";
 
 export default class DeleteCommand implements Command {
+  private context: VSCodeContext;
   private configuration: Configuration;
 
   public static getInstance(context: VSCodeContext): DeleteCommand {
@@ -11,6 +11,7 @@ export default class DeleteCommand implements Command {
   }
 
   private constructor(context: VSCodeContext) {
+    this.context = context;
     this.configuration = context.getConfiguration();
   }
 
@@ -22,7 +23,7 @@ export default class DeleteCommand implements Command {
   }
 
   private deleteThemeFromOptions(themeNames: string[]) {
-    vscode.window.showQuickPick(themeNames).then(this.deleteThemeIfSelected);
+    this.context.showQuickPick(themeNames).then(this.deleteThemeIfSelected);
   }
 
   private deleteThemeIfSelected(name: any) {
@@ -32,9 +33,10 @@ export default class DeleteCommand implements Command {
   }
 
   private deleteTheme(name: string) {
+    // TODO: Remove JSON.parse(JSON.stringify(x)) if possible
     const savedColors = JSON.parse(JSON.stringify(this.configuration.getSavedColors()));
     delete savedColors[name];
     this.configuration.updateSavedColors(savedColors);
-    vscode.window.showInformationMessage(`Theme '${name}' successfully deleted`);
+    this.context.showInformationMessage(`Theme '${name}' successfully deleted`);
   }
 }
