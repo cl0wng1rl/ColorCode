@@ -2,29 +2,28 @@ import * as Color from "color";
 import ThemeSettings from "./ThemeSettings";
 
 export default class Theme {
-  static generateSettingsFromColorStrings(colourStrings: Number[][]): ThemeSettings {
-    let colours = Theme.getColoursFromColourStrings(colourStrings);
-    //colours = Theme.shuffleColours(colours);
-    colours = Theme.saturateColours(colours);
-    const jsonEditorTheme = Theme.createJSONEditorTheme(colours);
-    const jsonWorkbenchTheme = Theme.createJSONWorkbenchTheme(colours);
+  public generateSettingsFromColorStrings(colorStrings: number[][]): ThemeSettings {
+    let colors = this.getColorsFromColorStrings(colorStrings);
+    colors = this.saturateColors(colors);
+    const jsonEditorTheme = this.createJSONEditorTheme(colors);
+    const jsonWorkbenchTheme = this.createJSONWorkbenchTheme(colors);
     return new ThemeSettings(jsonWorkbenchTheme, jsonEditorTheme);
   }
 
-  private static getColoursFromColourStrings(colourStrings: Number[][]): Color[] {
-    let colours: Color[] = [];
-    colourStrings.forEach(c => {
-      colours.push(Color.rgb(c));
+  private getColorsFromColorStrings(colorStrings: number[][]): Color[] {
+    let colors: Color[] = [];
+    colorStrings.forEach(c => {
+      colors.push(Color.rgb(c));
     });
-    return colours;
+    return colors;
   }
 
-  private static saturateColours(colours: Color[]): Color[] {
-    return colours.map(color => color.saturate(0.6));
+  private saturateColors(colors: Color[]): Color[] {
+    return colors.map(color => color.saturate(0.6));
   }
 
-  private static createJSONEditorTheme(colours: Color[]): Object {
-    const standardColors = Theme.getStandardColors(colours);
+  private createJSONEditorTheme(colors: Color[]): Object {
+    const standardColors = this.getStandardColors(colors);
     return {
       textMateRules: [
         {
@@ -114,17 +113,16 @@ export default class Theme {
       variables: standardColors.variables
     };
   }
-  // 23-33-47/57-71-89/126-131-144/154-199-184/235-217-204
 
-  private static createJSONWorkbenchTheme(colours: Color[]): Object {
-    const standardColors = Theme.getStandardColors(colours);
+  private createJSONWorkbenchTheme(colors: Color[]): Object {
+    const standardColors = this.getStandardColors(colors);
     let a = 3 + 2;
     return {
       foreground: standardColors.foreground,
       "editor.foreground": standardColors.textForeground,
       "widget.shadow": standardColors.borderBackground,
-      descriptionForeground: `${colours[3].darken(0.6).hex()}`,
-      errorForeground: `${colours[3].hex()}`,
+      descriptionForeground: `${colors[3].darken(0.6).hex()}`,
+      errorForeground: `${colors[3].hex()}`,
       "sideBar.foreground": standardColors.foreground,
       focusBorder: standardColors.borderBackground,
       "editor.background": standardColors.background,
@@ -142,7 +140,7 @@ export default class Theme {
     };
   }
 
-  private static getStandardColors(colors: Color[]) {
+  private getStandardColors(colors: Color[]) {
     const hslArrays = colors.map(color => color.hsl().array());
     return {
       background: Color.hsl([hslArrays[0][0], hslArrays[0][1], 8]).hex(),

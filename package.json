@@ -11,7 +11,7 @@
   },
   "homepage": "https://github.com/gabrielbarker/ColorCode#colorcode",
   "engines": {
-    "vscode": "^1.41.0"
+    "vscode": "^1.43.0"
   },
   "galleryBanner": {
     "color": "#58029e",
@@ -25,7 +25,7 @@
     "Theme",
     "Dark Theme",
     "Color",
-    "Colour",
+    "Color",
     "Random",
     "Generator"
   ],
@@ -78,17 +78,23 @@
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
     "pretest": "npm run compile",
-    "test": "node ./out/test/runTest.js"
+    "test": "node ./out/test/runTest.js",
+    "unit_test": "npm run compile && nyc mocha -r ts-node/register src/test/unit_tests/**/*.ts"
   },
   "devDependencies": {
+    "@types/chai": "^4.2.9",
     "@types/glob": "^7.1.1",
     "@types/mocha": "^5.2.7",
     "@types/node": "^12.11.7",
-    "@types/vscode": "^1.41.0",
+    "@types/vscode": "^1.43.0",
+    "chai": "^4.2.0",
     "glob": "^7.1.5",
     "mocha": "^6.2.2",
-    "typescript": "^3.6.4",
+    "nyc": "^15.0.0",
+    "ts-node": "^8.6.2",
     "tslint": "^5.20.0",
+    "typemoq": "^2.1.0",
+    "typescript": "^3.6.4",
     "vscode-test": "^1.2.2"
   },
   "dependencies": {
