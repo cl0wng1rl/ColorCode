@@ -1,16 +1,16 @@
 import Configuration from "../Configuration";
 import Command from "./Command";
-import VSCodeContext from "../VSCodeContext";
+import ExtensionContext from "../ExtensionContext";
 
 export default class SaveCommand implements Command {
-  private context: VSCodeContext;
+  private context: ExtensionContext;
   private configuration: Configuration;
 
-  public static getInstance(context: VSCodeContext): SaveCommand {
+  public static getInstance(context: ExtensionContext): SaveCommand {
     return new SaveCommand(context);
   }
 
-  private constructor(context: VSCodeContext) {
+  private constructor(context: ExtensionContext) {
     this.context = context;
     this.configuration = context.getConfiguration();
   }
@@ -21,13 +21,13 @@ export default class SaveCommand implements Command {
       .then(this.saveColorsIfNameIsValid);
   }
 
-  private saveColorsIfNameIsValid(value: any) {
+  private saveColorsIfNameIsValid = (value: any) => {
     const currentNames = this.configuration.getSavedThemeNames();
     if (currentNames.length) {
       this.saveCurrentColors(value);
       this.context.showInformationMessage(`Theme '${value}' successfully saved`);
     }
-  }
+  };
 
   private saveCurrentColors(name: string): void {
     const currentColors = this.configuration.getCurrentColors();
@@ -35,7 +35,7 @@ export default class SaveCommand implements Command {
   }
 
   private saveColors(colorStrings: number[][], name: string): void {
-    let savedColors = this.configuration.getSavedColors();
+    let savedColors = this.configuration.getSavedThemesOrEmptyObject();
     savedColors[name] = colorStrings;
     this.configuration.updateSavedColors(savedColors);
   }

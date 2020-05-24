@@ -1,16 +1,16 @@
 import Command from "./Command";
-import VSCodeContext from "../VSCodeContext";
+import ExtensionContext from "../ExtensionContext";
 import Configuration from "../Configuration";
 
 export default class GenerateThemeCodeCommand implements Command {
-  private context: VSCodeContext;
+  private context: ExtensionContext;
   private configuration: Configuration;
 
-  public static getInstance(context: VSCodeContext) {
+  public static getInstance(context: ExtensionContext) {
     return new GenerateThemeCodeCommand(context);
   }
 
-  private constructor(context: VSCodeContext) {
+  private constructor(context: ExtensionContext) {
     this.context = context;
     this.configuration = context.getConfiguration();
   }

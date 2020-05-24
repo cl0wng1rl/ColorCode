@@ -78,8 +78,9 @@
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
     "pretest": "npm run compile",
-    "test": "node ./out/test/runTest.js",
-    "unit_test": "npm run compile && nyc mocha -r ts-node/register src/test/unit_tests/**/*.ts"
+    "_test": "node ./out/test/runTest.js",
+    "unit-tests": "npm run compile && nyc mocha -r ts-node/register src/test/unit_tests/**/*.ts",
+    "test": "npm run compile && nyc mocha -r ts-node/register "
   },
   "devDependencies": {
     "@types/chai": "^4.2.9",

@@ -1,16 +1,16 @@
 import Configuration from "../Configuration";
 import Command from "./Command";
-import VSCodeContext from "../VSCodeContext";
+import ExtensionContext from "../ExtensionContext";
 
 export default class LoadCommand implements Command {
-  private context: VSCodeContext;
+  private context: ExtensionContext;
   private configuration: Configuration;
 
-  public static getInstance(context: VSCodeContext): LoadCommand {
+  public static getInstance(context: ExtensionContext): LoadCommand {
     return new LoadCommand(context);
   }
 
-  private constructor(context: VSCodeContext) {
+  private constructor(context: ExtensionContext) {
     this.context = context;
     this.configuration = context.getConfiguration();
   }
@@ -26,15 +26,15 @@ export default class LoadCommand implements Command {
     this.context.showQuickPick(themeNames).then(this.setTheme);
   }
 
-  private setTheme(themeName: any): void {
+  private setTheme = (themeName: any): void => {
     if (themeName) {
       const colorStrings = this.getColorsByName(themeName);
       this.configuration.updateConfiguration(colorStrings);
     }
-  }
+  };
 
   private getColorsByName(name: string): number[][] {
-    const colors = this.configuration.getSavedColors();
+    const colors = this.configuration.getSavedThemes();
     this.context.showInformationMessage(`Theme '${name}' successfully loaded`);
     return colors[name];
   }

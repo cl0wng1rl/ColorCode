@@ -1,16 +1,16 @@
 import Configuration from "../Configuration";
 import Command from "./Command";
-import VSCodeContext from "../VSCodeContext";
+import ExtensionContext from "../ExtensionContext";
 
 export default class DeleteCommand implements Command {
-  private context: VSCodeContext;
+  private context: ExtensionContext;
   private configuration: Configuration;
 
-  public static getInstance(context: VSCodeContext): DeleteCommand {
+  public static getInstance(context: ExtensionContext): DeleteCommand {
     return new DeleteCommand(context);
   }
 
-  private constructor(context: VSCodeContext) {
+  private constructor(context: ExtensionContext) {
     this.context = context;
     this.configuration = context.getConfiguration();
   }
@@ -26,15 +26,15 @@ export default class DeleteCommand implements Command {
     this.context.showQuickPick(themeNames).then(this.deleteThemeIfSelected);
   }
 
-  private deleteThemeIfSelected(name: any) {
+  private deleteThemeIfSelected = (name: any) => {
     if (name) {
       this.deleteTheme(name);
     }
-  }
+  };
 
   private deleteTheme(name: string) {
     // TODO: Remove JSON.parse(JSON.stringify(x)) if possible
-    const savedColors = JSON.parse(JSON.stringify(this.configuration.getSavedColors()));
+    const savedColors = JSON.parse(JSON.stringify(this.configuration.getSavedThemes()));
     delete savedColors[name];
     this.configuration.updateSavedColors(savedColors);
     this.context.showInformationMessage(`Theme '${name}' successfully deleted`);

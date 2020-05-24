@@ -1,10 +1,10 @@
-import VSCodeContext from "./VSCodeContext";
+import ExtensionContext from "./ExtensionContext";
 
 export default class InputValidator {
   private valid: boolean = false;
-  private context: VSCodeContext;
+  private context: ExtensionContext;
 
-  public constructor(context: VSCodeContext) {
+  public constructor(context: ExtensionContext) {
     this.context = context;
   }
 

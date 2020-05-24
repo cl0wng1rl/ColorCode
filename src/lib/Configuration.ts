@@ -2,38 +2,41 @@ import { WorkspaceConfiguration } from "vscode";
 
 import Theme from "./Theme";
 import ThemeSettings from "./ThemeSettings";
-import VSCodeContext from "./VSCodeContext";
+import ExtensionContext from "./ExtensionContext";
 import InputValidator from "./InputValidator";
 
 export default class Configuration {
   private static SAVED_COLORS_KEY = "savedColors";
   private static CURRENT_COLORS_KEY = "currentColors";
 
-  private context: VSCodeContext;
+  private context: ExtensionContext;
   private validator: InputValidator;
-  private editorConfig: WorkspaceConfiguration | any;
-  private workbenchConfig: WorkspaceConfiguration | any;
+  private editorConfig: any;
+  private workbenchConfig: any;
 
-  constructor(vscodeContext: VSCodeContext) {
-    this.context = vscodeContext;
-    this.validator = new InputValidator(vscodeContext);
-    this.editorConfig = vscodeContext.getExtensionConfiguration("editor");
-    this.workbenchConfig = vscodeContext.getExtensionConfiguration("workbench");
+  constructor(context: ExtensionContext) {
+    this.context = context;
+    this.validator = new InputValidator(context);
+    this.editorConfig = context.getExtensionConfiguration("editor");
+    this.workbenchConfig = context.getExtensionConfiguration("workbench");
   }
 
   public getSavedThemeNames(): string[] {
-    const savedColors = this.getSavedColors();
-    return Object.keys(savedColors);
+    return Object.keys(this.getSavedThemesOrEmptyObject());
   }
 
   public getCurrentColors(): number[][] {
-    return this.context.globalState.get<number[][]>(Configuration.CURRENT_COLORS_KEY) || [];
+    return this.context.globalState.getCurrent(Configuration.CURRENT_COLORS_KEY) || [];
   }
 
-  public getSavedColors(): any {
-    const savedColors = this.context.globalState.get(Configuration.SAVED_COLORS_KEY);
-    this.validator.validateSavedThemes(savedColors);
-    return this.validator.isValid() ? savedColors : [];
+  public getSavedThemes(): any {
+    const savedColors = this.getSavedThemesOrEmptyObject();
+    this.validator.validateSavedThemes(Object.keys(savedColors));
+    return this.validator.isValid() ? savedColors : {};
+  }
+
+  public getSavedThemesOrEmptyObject(): any {
+    return this.context.globalState.getSaved(Configuration.SAVED_COLORS_KEY) || {};
   }
 
   public getColorsFromCode(code: any): number[][] {
@@ -77,17 +80,17 @@ export default class Configuration {
 
   private getNewEditorConfig(settings: ThemeSettings) {
     return Object.assign({}, this.editorConfig.get("tokenColorCustomizations"), {
-      "[ColorCode]": settings.tokenColorCustomizations
+      "[ColorCode]": settings.tokenColorCustomizations,
     });
   }
 
   private getNewWorkbenchConfig(settings: ThemeSettings) {
     return Object.assign({}, this.workbenchConfig.get("tokenColorCustomizations"), {
-      "[ColorCode]": settings.colorCustomizations
+      "[ColorCode]": settings.colorCustomizations,
     });
   }
 
   private getColorsFromValidCode(code: string): number[][] {
-    return code.split("/").map(color => color.split("-").map(val => Number.parseInt(val)));
+    return code.split("/").map((color) => color.split("-").map((val) => Number.parseInt(val)));
   }
 }
