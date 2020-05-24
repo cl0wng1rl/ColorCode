@@ -4,11 +4,7 @@ export default class ColorMind {
   private xhr: XMLHttpRequest;
 
   constructor(xhr?: XMLHttpRequest) {
-    if (xhr) {
-      this.xhr = xhr;
-    } else {
-      this.xhr = new XMLHttpRequest();
-    }
+    this.xhr = xhr ? xhr : new XMLHttpRequest();
   }
 
   async getRandomColorPalette() {
