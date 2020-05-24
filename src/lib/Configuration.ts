@@ -1,5 +1,3 @@
-import { WorkspaceConfiguration } from "vscode";
-
 import Theme from "./Theme";
 import ThemeSettings from "./ThemeSettings";
 import ExtensionContext from "./ExtensionContext";
