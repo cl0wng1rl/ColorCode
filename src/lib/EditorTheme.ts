@@ -1,10 +1,8 @@
 export default class EditorTheme {
   private standardColors: { [index: string]: string } = {};
-  private editorTheme: Object;
 
   constructor(standardColors: { [index: string]: string }) {
     this.standardColors = standardColors;
-    this.editorTheme = {};
   }
 
   public getTheme(): Object {
