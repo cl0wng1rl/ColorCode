@@ -27,5 +27,12 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
     vscode.commands.registerCommand("extension.readThemeCode", commands.readThemeCode)
   );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand(
+      "extension.generateThemeFromCategory",
+      commands.generateThemeFromCategory
+    )
+  );
 }
 export function deactivate() {}
