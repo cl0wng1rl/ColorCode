@@ -4,6 +4,7 @@ import LoadCommand from "./LoadCommand";
 import DeleteCommand from "./DeleteCommand";
 import GenerateThemeCodeCommand from "./GenerateThemeCodeCommand";
 import ReadThemeCodeCommand from "./ReadThemeCodeCommand";
+import GenerateThemeFromCategoryCommand from "./GenerateThemeFromCategoryCommand";
 import ExtensionContext from "../ExtensionContext";
 
 export default class CommandSet {
@@ -13,6 +14,7 @@ export default class CommandSet {
   private deleteCommand: DeleteCommand;
   private generateThemeCodeCommand: GenerateThemeCodeCommand;
   private readThemeCodeCommand: ReadThemeCodeCommand;
+  private generateThemeFromCategoryCommand: GenerateThemeFromCategoryCommand;
 
   constructor(context: ExtensionContext) {
     this.generateCommand = GenerateCommand.getInstance(context);
@@ -21,6 +23,7 @@ export default class CommandSet {
     this.deleteCommand = DeleteCommand.getInstance(context);
     this.generateThemeCodeCommand = GenerateThemeCodeCommand.getInstance(context);
     this.readThemeCodeCommand = ReadThemeCodeCommand.getInstance(context);
+    this.generateThemeFromCategoryCommand = GenerateThemeFromCategoryCommand.getInstance(context);
   }
 
   public generate = (): void => {
@@ -45,5 +48,9 @@ export default class CommandSet {
 
   public readThemeCode = (): void => {
     this.readThemeCodeCommand.execute();
+  };
+
+  public generateThemeFromCategory = (): void => {
+    this.generateThemeFromCategoryCommand.execute();
   };
 }

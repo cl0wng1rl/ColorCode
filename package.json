@@ -35,7 +35,8 @@
     "onCommand:extension.loadTheme",
     "onCommand:extension.deleteTheme",
     "onCommand:extension.generateThemeCode",
-    "onCommand:extension.readThemeCode"
+    "onCommand:extension.readThemeCode",
+    "onCommand:extension.generateThemeFromCategory"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -63,6 +64,10 @@
       {
         "command": "extension.readThemeCode",
         "title": "ColorCode: Read Theme Code"
+      },
+      {
+        "command": "extension.generateThemeFromCategory",
+        "title": "ColorCode: Generate Theme By Category"
       }
     ],
     "themes": [
