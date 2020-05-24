@@ -70,6 +70,14 @@ When you have a theme code you can load it by doing the following:
 
 ## Release Notes
 
+### 1.2.0
+
+- Add the command _Generate Theme By Category_
+
+- Fix the highlight color to make it easier to distinguish
+
+- Completely refactor the project to increase performance
+
 ### 1.1.0
 
 - Improve the balance and vibrancy of the generated themes
