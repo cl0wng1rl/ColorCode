@@ -31,6 +31,12 @@ Once the extension is installed you can test it out by doing the following:
 2.  From the menu bar click: View > Command Palette
 3.  From the Command Palette select **Color Code: Generate Theme**
 
+ColorMind uses different sets of images from the internet to generate it's color palettes. These sets have common categories that change each day. You can see these categories and generate a theme based on that:
+
+1.  From the menu bar click: View > Command Palette
+2.  From the Command Palette select **Color Code: Generate Theme By Category**
+3.  Select the name of the category you would like to generate a theme from and hit **Enter**
+
 Once you have found a theme you like you can save it by doing the following:
 
 1.  From the menu bar click: View > Command Palette
