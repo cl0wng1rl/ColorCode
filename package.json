@@ -2,7 +2,7 @@
   "name": "colorcode",
   "displayName": "ColorCode",
   "description": "A VS Code extension that can generate color themes for your workspace",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "icon": "images/icon.png",
   "publisher": "gabrielbarker",
   "repository": {
